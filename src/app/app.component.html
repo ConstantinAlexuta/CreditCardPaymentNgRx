@@ -2,31 +2,32 @@
 
   <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
     <div class="container">
-    
+
       <a class="navbar-brand" href="#" [routerLink]="['credit-card-payment']">
         Credit Card Payment
       </a>
-    
+
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-    
+
       <div class="col col-sm-8">
         <form class="form-inline my-3 my-lg-0" style="align-content: left;">
-    
-          <button class="btn btn-outline-secondary ml-0 mr-5 px-5 my-3 my-sm-0 nav-link" 
+
+          <button class="btn btn-outline-secondary ml-0 mr-5 px-5 my-3 my-sm-0 nav-link"
             [routerLink]="['credit-card-payment']"
             routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             View all
           </button>
 
-          <button class="btn btn-outline-secondary mx-5 px-5 my-3 my-sm-0 nav-link " 
+          <button class="btn btn-outline-secondary mx-5 px-5 my-3 my-sm-0 nav-link "
             [routerLink]="['credit-card-payment/new']"
             routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             Add new
           </button>
-    
+
         </form>
       </div>
 
@@ -34,7 +35,7 @@
   </nav>
 
   <div>
-    
+
   </div>
 
 </div>
