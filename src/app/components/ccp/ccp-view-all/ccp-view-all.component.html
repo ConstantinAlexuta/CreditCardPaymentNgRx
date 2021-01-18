@@ -1,0 +1,92 @@
+<div class="container">
+     
+    <div *ngIf="!ccps " class="container my-5"
+        style="align-ccps: center; align-content: center; align-self: center;">
+        ccps list was not been possible to be read it from server.
+        <br>
+        The database server it's possible to be stopped.
+        <br>
+        Or internet connection is not available.
+    </div>
+    
+    
+    <div *ngIf="ccps && ccps.length == 0 " class="container my-5"
+        style="align-ccps: center; align-content: center; align-self: center;">
+        ccps list is empty.
+        <br>
+        Add the first ccp by selecting the "Add one" option.
+    </div>
+    
+    
+    <div *ngIf="ccps && ccps.length != 0" class="container"
+        style="align-ccps: center; align-content: center; align-self: center;">
+    
+        <div class="table table-responsive px-3 py-4 mt-1">
+    
+            <div class="table mb-0">
+    
+                <thead>
+                    <tr>
+
+                        <th>
+                            Credit Card Number
+                        </th>
+
+                        <th>
+                            Card Holder
+                        </th>
+
+                        <th>
+                            Expiration Date
+                        </th>
+                        
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Security Code - CCV
+                        </th>
+
+                    </tr>
+                </thead>
+    
+                <tbody>
+    
+                    <tr *ngFor="let ccp of ccps; let i = index">
+    
+                        <td>{{ccp.creditCardNumber}}</td>
+    
+                        <td [routerLink]="['credit-card-payment', i]" style="color: blue;"
+                            [title]="ccp.cardHolder! + ' >>> click to see more details'">
+                            {{ccp.cardHolder}}
+                        </td>
+    
+                        <td>{{ccp.expirationDate}}</td>
+    
+                        <td>{{ccp.amount}}</td>
+    
+                        <td>{{ccp.securityCodeCCV}}</td>
+    
+                    </tr>
+    
+                </tbody>
+    
+            </div>
+    
+        </div>
+    
+        <div class="ml-3 mb-5">
+    
+            <div *ngIf="ccps && ccps.length == 1">
+                Is only one ccp in this list.
+            </div>
+    
+            <div *ngIf="ccps && ccps.length > 1">
+                Are a total of {{ccps.length}} ccps in this list.
+            </div>
+    
+        </div>
+    
+    </div>
+</div>

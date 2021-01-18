@@ -1,0 +1,30 @@
+[
+    {
+        "creditCardNumber": "creditCardNumber1",
+        "cardHolder": "creditCardNumber",
+        "expirationDate": "creditCardNumber",
+        "amount": "creditCardNumber",
+        "securityCodeCCV": "creditCardNumber"
+    },
+    {
+        "creditCardNumber": "creditCardNumber2",
+        "cardHolder": "creditCardNumber",
+        "expirationDate": "creditCardNumber",
+        "amount": "creditCardNumber",
+        "securityCodeCCV": "creditCardNumber"
+    },
+    {
+        "creditCardNumber": "creditCardNumber3",
+        "cardHolder": "creditCardNumber",
+        "expirationDate": "creditCardNumber",
+        "amount": "creditCardNumber",
+        "securityCodeCCV": "creditCardNumber"
+    },
+    {
+        "creditCardNumber": "creditCardNumber4",
+        "cardHolder": "creditCardNumber",
+        "expirationDate": "creditCardNumber",
+        "amount": "creditCardNumber",
+        "securityCodeCCV": "creditCardNumber"
+    }
+]
