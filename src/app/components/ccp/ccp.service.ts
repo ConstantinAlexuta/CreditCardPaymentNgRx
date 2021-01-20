@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CreditCardPayment } from 'src/app/model/credit-card-payment';
 
 const httpOptions = {
   headers: new HttpHeaders({ ContentType: 'application/json' }),
@@ -17,9 +18,28 @@ export class CcpService {
     );
   }
 
-  // getProduct(id: number) {
-  //   return this.http.get('/server/api/v1/Ccps/' + id);
-  // }
+  getCcp(id: number) {
+    let ccps!: Array<CreditCardPayment>;
+
+    this.getCcps().subscribe(
+      (data) => (ccps = data),
+      (err) => console.error(err),
+      () => console.log('Credit Card Payments was loaded from database')
+    );
+
+    let ccp: CreditCardPayment = ccps[id];
+
+    return ccp;
+  }
+
+  createCcp(ccp: CreditCardPayment) {
+    let body = JSON.stringify(ccp);
+    return this.http.post(
+      'assets/database/credit-card-payment-db.json',
+      body,
+      httpOptions
+    );
+  }
 
   // saveProduct(product) {
   //   let body = JSON.stringify(product);

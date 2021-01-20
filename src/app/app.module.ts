@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CcpModule } from './components/ccp/ccp.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [AppComponent],
@@ -13,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
     CcpModule,
     FormsModule,
     ReactiveFormsModule,
+    NgbModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserModule,

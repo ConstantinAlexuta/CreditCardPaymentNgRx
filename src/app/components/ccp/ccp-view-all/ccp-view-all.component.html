@@ -57,7 +57,7 @@
     
                         <td>{{ccp.creditCardNumber}}</td>
     
-                        <td [routerLink]="['credit-card-payment', i]" style="color: blue;"
+                        <td [routerLink]="['/credit-card-payment', i + 1]" style="color: blue;"
                             [title]="ccp.cardHolder! + ' >>> click to see more details'">
                             {{ccp.cardHolder}}
                         </td>

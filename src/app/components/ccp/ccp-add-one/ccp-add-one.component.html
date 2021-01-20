@@ -1,1 +1,317 @@
-<p>ccp-add-one works!</p>
+<div class="container py-4 my-4">
+
+    <!-- ccpFormGroup.valid {{ ccpFormGroup.valid}}
+    <br> ccpFormGroup.value[0] {{ ccpFormGroup.value.creditCardNumber.length }}
+
+    <br>this.ccpFormGroup.value.expirationDate {{this.ccpFormGroup.value | json}}
+
+    <br>this.ccpFormGroup.value.expirationDate.expirationDate {{this.ccpFormGroup.value.expirationDate | json}}
+    <br>this.ccpFormGroup.value.expirationDate.expirationDate {{this.ccpFormGroup.value.expirationDate.year | json}}
+
+    <br> currentDate {{currentDate | date:'yyyy-MM-dd'}}
+    <br> currentDate.getFullYear {{currentDate.getFullYear }} -->
+
+    this.ccpFormGroup.value.expirationDate {{this.ccpFormGroup.value.expirationDate | json}}
+    <br> currentYearNumber {{currentYear }} {{currentMonth}} {{currentDay}}
+    <br> currentDate {{currentDate}}
+    <br> currentYear {{currentYear}}
+    <br> currentMonth {{currentMonth}}
+    <br> currentDay {{currentDay}}
+    <br> this.ccpFormGroup.value.expirationDate.year {{+this.ccpFormGroup.value.expirationDate.year}}
+
+    <!-- <br> formDate {{formDate}}
+    <br> formYear {{formYear}}
+    <br> formMonth {{formMonth}}
+    <br> formDay {{formDay}} -->
+
+    <br> datePickerYearIsValid {{this.datePickerYearIsValid}}
+
+
+    <h3 class="my-4">Add a new Credit Card Payment details</h3>
+
+    <form [formGroup]="ccpFormGroup" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="form-group input-group mb-3">
+            <label>Expiration Date</label>
+            <span *ngIf="!ccpFormGroup.value.expirationDate" style="color: red">
+                &nbsp;*
+            </span>
+            <span *ngIf="ccpFormGroup.value.expirationDate">
+                <span *ngIf="!(isNumber(+this.ccpFormGroup.value.expirationDate.slice(0,4)) 
+                            && isValidDateYearGreaterThanCurrentYearPlusFive(+this.ccpFormGroup.value.expirationDate.slice(0,4)))"  
+                            style="color: red">
+                    &nbsp;* Year is not valid (must be between {{this.currentYear}} and {{this.currentYear + 5}}).
+                </span>
+                <span
+                    *ngIf="!(!(isNumber(+this.ccpFormGroup.value.expirationDate.slice(0,4)) 
+                            && isValidDateYearGreaterThanCurrentYearPlusFive(+this.ccpFormGroup.value.expirationDate.slice(0,4))))"
+                    >
+                    <span *ngIf="this.ccpFormGroup.value.expirationDate.slice(4,5) != '-'" style="color: red">
+                        &nbsp;* Dash is required between year and month (yyyy-mm-dd).
+                    </span>
+                    <span  *ngIf="this.ccpFormGroup.value.expirationDate.slice(4,5) == '-'">
+                        <span *ngIf="!isNumber(+this.ccpFormGroup.value.expirationDate.slice(5,7))"  style="color: red">
+                            &nbsp;* Month is not valid (must be a number).
+                        </span>
+                        <span *ngIf="isNumber(+this.ccpFormGroup.value.expirationDate.slice(5,7))">
+                            <span *ngIf="!isValidDateMonthGreaterThanCurrentMonthIfTheSameYear(
+                                    +this.ccpFormGroup.value.expirationDate.slice(0,4), +this.ccpFormGroup.value.expirationDate.slice(5,7))"  
+                                    style="color: red">
+                                &nbsp;* Month is not valid (must be between 1 and 12 and must be greater than current month if year is equal with current year).
+                            </span>
+                            <span *ngIf="!(!isValidDateMonthGreaterThanCurrentMonthIfTheSameYear(
+                                    +this.ccpFormGroup.value.expirationDate.slice(0,4), +this.ccpFormGroup.value.expirationDate.slice(5,7)))">
+                                <span *ngIf="this.ccpFormGroup.value.expirationDate.slice(7,8) != '-'" style="color: red">
+                                    &nbsp;* Dash is required between month and day (yyyy-mm-dd).
+                                </span>
+                                <span *ngIf="this.ccpFormGroup.value.expirationDate.slice(7,8) == '-'">
+                                    <span *ngIf="!isNumber(+this.ccpFormGroup.value.expirationDate.slice(8,10))" style="color: red">
+                                        &nbsp;* Day is not valid (must be a number).
+                                    </span>
+                                    <span *ngIf="isNumber(+this.ccpFormGroup.value.expirationDate.slice(8,10))">
+                                        <span *ngIf="!isValidDateDayGreaterThanCurrentDayIfMonthAndYearAreTheSameValidAlsoForBisect(
+                                                        +this.ccpFormGroup.value.expirationDate.slice(0,4), 
+                                                        +this.ccpFormGroup.value.expirationDate.slice(5,7),
+                                                        +this.ccpFormGroup.value.expirationDate.slice(8,10))" style="color: red">
+                                            &nbsp;* Day is not valid for bisect years and greater than current day if the month and year are equals with
+                                            current month and year.
+                                        </span>
+                                        <span *ngIf="isValidDateDayGreaterThanCurrentDayIfMonthAndYearAreTheSameValidAlsoForBisect(
+                                                        +this.ccpFormGroup.value.expirationDate.slice(0,4), 
+                                                        +this.ccpFormGroup.value.expirationDate.slice(5,7),
+                                                        +this.ccpFormGroup.value.expirationDate.slice(8,10))">
+                                            <span *ngIf="!(this.ccpFormGroup.value.expirationDate.slice(10,11).length() == 0)" style="color: red">
+                                                &nbsp;* Invalid date format (yyyy-mm-dd).
+                                            </span>
+                                            <span *ngIf="this.ccpFormGroup.value.expirationDate.slice(10,11).length() == 0">
+                                                &nbsp;* <i class="fas fa-check"></i>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                    </span>
+                </span>
+            </span>
+            <br>
+            <span *ngIf="ccpFormGroup.value.expirationDate" style="color: red">
+                <span *ngIf="datePickerYearIsValid" style="color: red">
+                    &nbsp;* Year is not valid.
+                </span>
+            </span>
+            
+            <!-- <label *ngIf="" style="color: red">
+                &nbsp;Date typed has not the valid format (yyyy-mm-dd) or is not an valid date (use date picker to avoid
+                errors).
+            </label> -->
+            
+            <div class="input-group">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary calendar" 
+                        (click)="datePicker.toggle();" 
+                        (click)="onDatePicker();"
+                        type="button">
+                        <i class="far fa-calendar-alt"></i>
+                    </button>
+                </div>
+                <input class="form-control" placeholder="yyyy-mm-dd" 
+                    name="expirationDate" formControlName="expirationDate" [(ngModel)]="expirationDate" 
+                    ngbDatepicker #datePicker="ngbDatepicker">
+            </div>
+        </div>
+
+        <!-- <div class="form-group input-group mb-3">
+            <label>Expiration Date</label>
+            <label *ngIf="!ccpFormGroup.value.expirationDate" style="color: red">
+                &nbsp;*
+            </label>
+            <label *ngIf="!isValidDateForamtYyyyMmDd(ccpFormGroup.value.expirationDate)" style="color: red">
+                &nbsp;Date typed has not the valid format (yyyy-mm-dd) or is not an valid date (use date picker to avoid
+                errors).
+            </label>
+            <div class="input-group mb-3">
+            
+                <input class="form-control" placeholder="yyyy-mm-dd" name="expirationDate" [(ngModel)]="expirationDate"
+                    ngbDatepicker formControlName="expirationDate" #d="ngbDatepicker" required>
+            </div>
+        </div> -->
+
+        <!-- <div class="form-group input-group mb-3 col-4">
+            <div class="row">
+                <label>Expiration Date</label>
+            </div>
+            <div class="row">
+            
+            </div>
+            
+            
+            <span class="input-group-text">
+                Year
+                <span *ngIf="!ccpFormGroup.value.formYear" style="color: red">
+                    &nbsp;*
+                </span>
+            </span>
+            <input type="text" class="form-control" aria-label="formYear" placeholder="yyyy" name="formYear"
+                formControlName="formYear" required [(ngModel)]="formYear" maxlength="4">
+        </div> -->
+
+        <!-- <div class="form-group input-group mb-3">
+            <label>Expiration Date</label>
+            <label *ngIf="!ccpFormGroup.value.expirationDate" style="color: red">
+                &nbsp;*
+            </label>
+            <label *ngIf="!isValidDateForamtYyyyMmDd(ccpFormGroup.value.expirationDate)" style="color: red">
+                &nbsp;Date typed has not the valid format (yyyy-mm-dd) or is not an valid date (use date picker to avoid
+                errors).
+            </label>
+            <div class="input-group mb-3">
+                
+                <input class="form-control" placeholder="yyyy-mm-dd" name="expirationDate" [(ngModel)]="expirationDate"
+                    ngbDatepicker formControlName="expirationDate" #d="ngbDatepicker" required>
+            </div>
+
+            <span class="input-group-text">Year</span>
+            <input type="text" class="form-control" aria-label="formYear" placeholder="yyyy" 
+                name="formYear" formControlName="formYear" required [(ngModel)]="formYear"
+                maxlength="4">
+
+            <span class="input-group-text">Month</span>
+            <input type="text" class="form-control" aria-label="formMonth" placeholder="mm"
+                name="formMonth" formControlName="formMonth" required [(ngModel)]="formMonth"
+                maxlength="2">
+
+            <span class="input-group-text">Day</span>
+            <input type="text" class="form-control" aria-label="formDay" placeholder="dd"
+                name="formDay" formControlName="formDay" required [(ngModel)]="formDay"
+                maxlength="2">
+        </div> -->
+
+
+        <div class="form-group">
+            <label>
+                Credit Card Number
+            </label>
+            <label *ngIf="ccpFormGroup.value.creditCardNumber.length != 16" style="color: red">
+                &nbsp;*
+            </label>
+            <label *ngIf="ccpFormGroup.value.creditCardNumber.length == 16" style="color: black">
+                &nbsp;* <i class="fas fa-check"></i>
+            </label>
+            <label 
+                *ngIf="ccpFormGroup.value.creditCardNumber.length != 16 
+                        && isNumber(+ccpFormGroup.value.creditCardNumber)" 
+                style="color: red">
+                &nbsp;(required 16 digits
+                <span *ngIf="ccpFormGroup.value.creditCardNumber.length >= 1">
+                    , now are only {{ccpFormGroup.value.creditCardNumber.length}}
+                </span>)
+            </label>
+            <label>
+                <span *ngIf="!isNumber(+ccpFormGroup.value.creditCardNumber)" style="color: red">
+                    &nbsp; (only digits are acceptable)
+                </span>
+            </label>
+            <input type="text" class="form-control form-control-sm" formControlName="creditCardNumber"
+                 required placeholder=" required 8 digits" autofocus />
+        </div>
+
+        <div class="form-group">
+            <label>Card Holder</label>
+            <label *ngIf="!(ccpFormGroup.value.cardHolder.length > 2 && !isNumber(+ccpFormGroup.value.cardHolder))" style="color: red">
+                &nbsp;*
+            </label>
+            <label *ngIf="ccpFormGroup.value.cardHolder.length > 2 && !isNumber(+ccpFormGroup.value.cardHolder) " style="color: black">
+                &nbsp;* <i class="fas fa-check"></i>
+            </label>
+            <label *ngIf="ccpFormGroup.value.cardHolder.length < 2 
+                                            && !isNumber(+ccpFormGroup.value.cardHolder)" style="color: red">
+                &nbsp;(required at least 2 characters
+                <span *ngIf="ccpFormGroup.value.cardHolder.length >= 1">
+                    , now are only {{ccpFormGroup.value.cardHolder.length}}
+                </span>)
+            </label>
+            <label>
+                <span *ngIf="ccpFormGroup.value.cardHolder.length > 0 && isNumber(+ccpFormGroup.value.cardHolder)" style="color: red">
+                    &nbsp; (only characters are acceptable at the beginning)
+                </span>
+            </label>
+            <input type="text" class="form-control form-control-sm" formControlName="cardHolder"  
+                required placeholder="" autofocus />
+        </div>
+
+        
+
+        <div class="form-group">
+            <label>Amount </label> 
+            <label *ngIf="!(ccpFormGroup.value.amount > 0)" style="color: red">
+                &nbsp;*
+            </label>
+            <label *ngIf="ccpFormGroup.value.amount > 0" style="color: black">
+                &nbsp;* <i class="fas fa-check"></i>
+            </label>
+            <input type="number" class="form-control form-control-sm" 
+            formControlName="amount" required placeholder="" autofocus step="0.01"
+            />
+        </div>
+
+        <div class="form-group">
+            <label>
+                Security Code (CCV)
+            </label>
+            <label *ngIf="ccpFormGroup.value.securityCodeCCV.length != 3 || !isNumber(+ccpFormGroup.value.securityCodeCCV)" style="color: red">
+                &nbsp;*
+            </label>
+            <label *ngIf="ccpFormGroup.value.securityCodeCCV.length == 3 && !(!isNumber(+ccpFormGroup.value.securityCodeCCV))" style="color: black">
+                &nbsp;*  <i class="fas fa-check"></i>
+            </label>
+            <label *ngIf="ccpFormGroup.value.securityCodeCCV.length != 3 
+                                && isNumber(+ccpFormGroup.value.securityCodeCCV)" style="color: red">
+                &nbsp;(required 3 digits
+                <span *ngIf="ccpFormGroup.value.securityCodeCCV.length >= 1">
+                    , now are only {{ccpFormGroup.value.securityCodeCCV.length}}
+                </span>)
+            </label>
+            <label>
+                <span *ngIf="!isNumber(+ccpFormGroup.value.securityCodeCCV)" style="color: red">
+                    &nbsp; (only digits are acceptable)
+                </span>
+            </label>
+            <input type="text" class="form-control form-control-sm" formControlName="securityCodeCCV" required
+                placeholder=" required 3 digits" maxlength="3" autofocus />
+        </div>
+
+
+        <button type="submit" class="btn btn-outline-secondary px-4 mx-4 my-4">
+            Save
+        </button>
+
+        <div>
+            <p class="has-info">
+                <span *ngIf="validMessage != ''">
+                    {{validMessage}}
+                </span>
+            </p>
+        </div>
+
+
+        <div *ngIf="validMessage != ''">
+
+
+            <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" [routerLink]="['credit-card-payment']">
+                Back to all
+            </button>
+
+            <!-- <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" (click)="goToLastSavedItemView()">
+                View the saved item
+            </button>
+
+            <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" (click)="goToLastSavedItemEditView()">
+                Edit the saved item
+            </button> -->
+
+        </div>
+
+    </form>
+
+</div>
