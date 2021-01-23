@@ -1,0 +1,32 @@
+[
+    {
+        "id": "d87a7055-44a3-4563-ae0c-a6f0a7fcf00a",
+        "firstName": "Alexandru",
+        "lastName": "Gavrila"
+    },
+    {
+        "id": "496ad21c-8462-4e7d-b0c6-f4ff4c6c386b",
+        "firstName": "Ion",
+        "lastName": "Saftica"
+    },
+    {
+        "id": "88d5f1e8-f3b3-44ca-8d41-0033df64a2c6",
+        "firstName": "Mihai",
+        "lastName": "Neajlov"
+    },
+    {
+        "id": "994b5e03-4e37-42bb-8473-ecdfaffd6854",
+        "firstName": "Ghita",
+        "lastName": "Spectru"
+    },
+    {
+        "id": "a16fcc97-57b3-4606-b68b-1407f6efae9b",
+        "firstName": "Radu",
+        "lastName": "Morarut"
+    },
+    {
+        "id": "18aea26f-7838-4313-adb0-6d2db6a8dcab",
+        "firstName": "Ana",
+        "lastName": "Pachita"
+    }
+]

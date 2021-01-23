@@ -17,16 +17,30 @@
       <div class="col col-sm-8">
         <form class="form-inline my-3 my-lg-0" style="align-content: left;">
 
-          <button class="btn btn-outline-secondary ml-0 mr-5 px-5 my-3 my-sm-0 nav-link"
-            [routerLink]="['credit-card-payment']"
+          <button class="btn btn-outline-secondary mx-3 px-2 my-2 py-2 nav-link"
+            [routerLink]="['ccps']"
             routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            View all
+            View all payments
           </button>
 
-          <button class="btn btn-outline-secondary mx-5 px-5 my-3 my-sm-0 nav-link "
-            [routerLink]="['credit-card-payment/new']"
+          <button class="btn btn-outline-secondary  mx-3 px-2 my-2 py-2 nav-link"
+            [routerLink]="['ccp-add-one']"
             routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            Add new
+            Create new payment
+          </button>
+
+         
+
+          <button class="btn btn-outline-secondary  mx-3 px-2 my-2 py-2 nav-link" 
+            [routerLink]="['clients']"
+            routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            View all clients
+          </button>
+          
+          <button class="btn btn-outline-secondary  mx-3 px-2 my-2 py-2 nav-link" 
+            [routerLink]="['create-client']"
+            routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            Add new client
           </button>
 
         </form>

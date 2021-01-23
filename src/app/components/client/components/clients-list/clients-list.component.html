@@ -1,0 +1,72 @@
+<div class="container my-5 py-5">
+
+    <div *ngIf="!clients">
+        Items list was not been loaded.
+    </div>
+
+    <table *ngIf="clients" class="table">
+
+        <thead>
+            <tr>
+                <th scope="col">
+                    Id
+                </th>
+                <th scope="col">
+                    First name
+                </th>
+                <th scope="col">
+                    Last name
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let client of clients | async">
+                <td>
+                    {{client.id}}
+                </td>
+                <td>
+                    {{client.firstName}}
+                </td>
+                <td>
+                    {{client.lastName}}
+                </td>
+                <td>
+                    <button (click)="showUpdateClientForm(client)" class="btn btn-secondary mx-3">
+                        Update
+                    </button>
+                    <button (click)="deleteClient(client.id)" class="btn btn-secondary mx-3">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+    <div *ngIf="isUpdateActivated" style="margin-top: 50px; margin-left: 50px;">
+        <h4>Update Course</h4>
+        <form (ngSubmit)="updateClient(updateClientForm)" #updateClientForm="ngForm">
+            <div class="form-group">
+                <label for="firstName">Client First Name</label>
+                <input type="text" id="firstName" name="firstName" class="form-control" 
+                required [(ngModel)]="clientToBeUpdated!.firstName"
+                    style="width: 400px" />
+            </div>
+            <div class="form-group">
+                <label for="lastName">Client Last Name</label>
+                <input type="text" id="lastName" name="lastName" class="form-control" required
+                    [(ngModel)]="clientToBeUpdated!.lastName" style="width: 400px" />
+            </div>
+            <button [disabled]="updateClientForm.invalid" class="btn btn-primary" type="submit">
+                Update
+            </button>
+        </form>
+    </div>
+
+
+</div>
