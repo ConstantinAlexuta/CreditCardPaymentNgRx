@@ -21,6 +21,7 @@ export class CreateClientComponent implements OnInit {
       return;
     }
 
+
     const client: Client = {
       id: uuidv4(),
       firstName: submittedForm.value.firstName,
