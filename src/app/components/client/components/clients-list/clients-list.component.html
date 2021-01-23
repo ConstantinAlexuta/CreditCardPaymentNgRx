@@ -49,7 +49,9 @@
 
 
     <div *ngIf="isUpdateActivated" style="margin-top: 50px; margin-left: 50px;">
-        <h4>Update Course</h4>
+
+        <h4 class="my-3">Update Client</h4>
+        
         <form (ngSubmit)="updateClient(updateClientForm)" #updateClientForm="ngForm">
             <div class="form-group">
                 <label for="firstName">Client First Name</label>

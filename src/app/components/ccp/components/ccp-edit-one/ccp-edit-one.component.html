@@ -1,1 +1,225 @@
-<p>ccp-edit-one works!</p>
+
+
+this.itemForm.valid >>> {{this.itemForm.valid}}
+<br> editedItemIsDifferentThanInitialItem >>> {{editedItemIsDifferentThanInitialItem}}
+<br> itemForm.value >>> {{itemForm.value | json}}
+
+<div class="container pb-4 mb-4">
+
+    <form [formGroup]="itemForm" (ngSubmit)="submitForm()">
+
+        <div class="form-group">
+            <label for="id">
+                <span>Id</span>
+            </label>
+            <input class="form-control" name="id" id="id" type="text" formControlName="id"
+            [attr.disabled]="true"
+            (click)="ifModifiedEnableSaveButton()"
+            value=""
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="creditCardNumber">
+                <span>Credit Card Number</span>
+                <span [ngStyle]="{'color': (item.creditCardNumber == '' ? 'red' : 'black') }">&nbsp;*</span>
+                <span *ngIf="showIf && itemForm.value.creditCardNumber == ''" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (required)
+                </span>
+                <span *ngIf="showIf && itemForm.value.creditCardNumber!.length < 1" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (minim length = 1 character)
+                </span>
+                <span *ngIf="showIf && itemForm.value.creditCardNumber!.length > 100" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (maxim length = 100 characters)
+                </span>
+            </label>
+            <input class="form-control" name="creditCardNumber" id="creditCardNumber" type="text" 
+                formControlName="creditCardNumber" 
+                placeholder=""
+            (click)="ifModifiedEnableSaveButton()"
+            value=""
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="cardHolder">
+                <span>Card Holder</span>
+                <span [ngStyle]="{'color': (item.cardHolder == '' ? 'red' : 'black') }">&nbsp;*</span>
+                <span *ngIf="showIf && itemForm.value.cardHolder == ''" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (required)
+                </span>
+                <span *ngIf="showIf && itemForm.value.cardHolder!.length < 1" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (minim length = 1 character)
+                </span>
+                <span *ngIf="showIf && itemForm.value.cardHolder!.length > 100" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (maxim length = 100 characters)
+                </span>
+            </label>
+            <input class="form-control" name="cardHolder" id="cardHolder" type="text" 
+                formControlName="cardHolder" 
+                placeholder=""
+            (click)="ifModifiedEnableSaveButton()"
+            value=""
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="expirationDate">
+                <span>Expiration Date</span>
+                <span [ngStyle]="{'color': (item.expirationDate == '' ? 'red' : 'black') }">&nbsp;*</span>
+                <span *ngIf="showIf && itemForm.value.expirationDate == ''" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (required)
+                </span>
+                <span *ngIf="showIf && itemForm.value.expirationDate!.length < 1" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (minim length = 1 character)
+                </span>
+                <span *ngIf="showIf && itemForm.value.expirationDate!.length > 100" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (maxim length = 100 characters)
+                </span>
+            </label>
+            <input class="form-control" name="expirationDate" id="expirationDate" type="text" 
+                formControlName="expirationDate" 
+                placeholder=""
+            (click)="ifModifiedEnableSaveButton()"
+            value=""
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="amount">
+                <span>Amount</span>
+                <span [ngStyle]="{'color': (item.amount == '' ? 'red' : 'black') }">&nbsp;*</span>
+                <span *ngIf="showIf && itemForm.value.amount == ''" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (required)
+                </span>
+                <span *ngIf="showIf && itemForm.value.amount!.length < 1" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (minim length = 1 character)
+                </span>
+                <span *ngIf="showIf && itemForm.value.amount!.length > 100" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (maxim length = 100 characters)
+                </span>
+            </label>
+            <input class="form-control" name="amount" id="amount" type="text" 
+                formControlName="amount" 
+                placeholder=""
+            (click)="ifModifiedEnableSaveButton()"
+            value=""
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="securityCodeCCV">
+                <span>Security Code (CCV)</span>
+                <span [ngStyle]="{'color': (item.securityCodeCCV == '' ? 'red' : 'black') }">&nbsp;*</span>
+                <span *ngIf="showIf && itemForm.value.securityCodeCCV == ''" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (required)
+                </span>
+                <span *ngIf="showIf && itemForm.value.securityCodeCCV!.length < 1" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (minim length = 1 character)
+                </span>
+                <span *ngIf="showIf && itemForm.value.securityCodeCCV!.length > 100" 
+                    [ngStyle]="{ 'color' : 'magenta' }" [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (maxim length = 100 characters)
+                </span>
+            </label>
+            <input class="form-control" name="securityCodeCCV" id="securityCodeCCV" type="text" 
+                formControlName="securityCodeCCV" 
+                placeholder=""
+            (click)="ifModifiedEnableSaveButton()"
+            value=""
+            >
+        </div>
+        
+
+        <!-- <div class="form-group">
+            <label for="status">
+                <span>Status</span>
+                <span [ngStyle]="{'color': (itemForm.value.status == '' ? 'red' : 'black') }">&nbsp;*</span>
+                <span *ngIf="showIf && itemForm.value.status == ''" 
+                    [ngStyle]="{ 'color' : 'magenta' }" 
+                    [style.font-size.em]="0.8"> &nbsp; &nbsp;
+                    (required)
+                </span>
+            </label>
+
+            <select class="form-control form-select form-select-sm" formControlName="status" aria-label="Default select example"
+                required placeholder=""
+                name="status" id="status"
+                (click)="ifModifiedEnableSaveButton()"
+                >
+                <option selected>NEW</option>////////////
+                <option *ngFor="let status of statuses; let i = index" value="{{status.value}}">{{status.value}}</option>
+            </select>
+        </div> -->
+      
+        <div class="mt-5 mb-4">
+            <button type="submit" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
+                [disabled]="!itemForm.dirty">
+                Save changes
+            </button>
+            
+            <!-- (click)="onCancelGoToViewOne()" -->
+            <!-- [routerLink]="['../../../view-one', +itemId]"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}" -->
+            <button type="button" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
+                (click)="onCancelEdit()">              
+                Cancel edit
+            </button>
+            
+            <button type="button" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
+                (click)="restoreInitialItemForm()">Initial
+                form</button>
+            
+            <button type="button" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
+                (click)="clearItemForm()">Clear
+                form</button>
+
+            <button type="button" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
+                (click)="clearItemForm()"
+                [routerLink]="['../../../view-all']" 
+                routerLinkActive="active" 
+                [routerLinkActiveOptions]="{exact: true}">
+                Back to all
+            </button>
+        </div>
+
+        <div>
+            <div *ngIf="showMessageIfModificationIsSavedOnServerWithFailure" style="color: red">
+                {{messageIfModificationIsSavedOnServerWithFailure}}
+            </div>
+
+            <div *ngIf="showMessageIfWasSavedWithBankSpacesAtMargins" style="color: rgb(7, 204, 230)">
+                {{messageIfWasSavedWithBankSpacesAtMargins}}
+            </div>
+            
+            <div *ngIf="showMessageIfModificationIsSavedOnServerWithSuccess" style="color: green">
+                {{messageIfModificationIsSavedOnServerWithSuccess}}
+            </div>
+            
+            <div *ngIf="showMessageItemHasNotthingChanged" style="color: blue">
+                {{messageItemHasNotthingChanged}}
+            </div>
+
+            <div *ngIf="showMessageIfItemFormIsInvalid" style="color: magenta">
+                {{messageIfItemFormIsInvalid}}
+            </div>
+        </div>
+
+    </form>
+
+</div>

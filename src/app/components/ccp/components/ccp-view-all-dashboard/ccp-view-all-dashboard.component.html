@@ -1,0 +1,142 @@
+<div class="container">
+
+    <div class="row">
+        <div class="col col-sm-2">
+
+        </div>
+        <div class="col col-sm-8">
+            <nav class="navbar 
+                            
+                            fixed-top
+                            navbar-expand-lg navbar-light bg-light">
+                <!-- style="position: absolute;" -->
+            
+                <div class="container-fluid">
+            
+                    <!-- <a class="navbar-brand" href="#" [routerLink]="['view-all']">{{pageBrandItem}}</a> -->
+            
+                    
+            
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                        
+            
+                        <div class="container">
+
+                            <a class="navbar-brand" href="#" [routerLink]="['view-all']">
+                                <!-- Basic data -->
+                                <span>
+                                     <!-- >>>  -->
+
+                                </span><span> </span> {{pageBrandItem}} Dashboard</a>
+
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+
+                            <div class="col col-sm-8 my-2">
+                                <form class="form-inline my-4 my-lg-0" style="align-content: left;">
+
+                                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" 
+                                        [routerLink]="['home']"
+                                        routerLinkActive="active" 
+                                        [routerLinkActiveOptions]="{exact: true}">
+                                        Home
+                                    </button>
+                                
+                                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" [routerLink]="['view-all']"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                        View all
+                                    </button>
+                                
+                                    <!-- <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" [routerLink]="['view-one/1']"
+                                                                                                            routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                                                                                                            View
+                                                                                                            <input type="text" class="form-control  w-25" style="max-width: 20px; max-height: 25px;">
+                                                                                                        </button> -->
+                                
+                                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link " [routerLink]="['add-one']"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Add one</button>
+                                
+                                    <!-- <button class="btn btn-outline-secondary mx-3 px-2 my-2 my-sm-0 nav-link " [routerLink]="['add-more']"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Add more</button>
+                                 -->
+                                    <!-- <button class="btn btn-outline-secondary mx-3 px-2 my-2 my-sm-0 nav-link " [routerLink]="['edit-more']"
+                                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Edit
+                                        more</button> -->
+                                
+                                    <!-- <button class="btn  dropdown mx-3 px-2 my-1 my-sm-0 nav-link " 
+                                        routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{exact: true}">
+                                
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
+                                            role="button" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <span style="height: 3.5em;">
+                                                Go to
+                                            </span>
+                                        </a>
+                                
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a class="dropdown-item px-1 mx-1" 
+                                                [routerLink]="['../ccp']">{{itemDashboardName}}</a>
+                                            </li>
+                                            <li><a class="dropdown-item px-1 mx-1" [routerLink]="['../service-types']">Service
+                                                    types</a></li>
+                                            <li><a class="dropdown-item px-1 mx-1" [routerLink]="['../included-services']">Included
+                                                    services</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item px-1 mx-1" [routerLink]="['../manager-offers']">Manage
+                                                    offers</a></li>
+                                        </ul>
+                                    </button> -->
+                                
+                                </form>
+                            </div>
+                            <div class="col col-sm-2">
+                            
+                            </div>
+                            <div class="col col-sm-2">
+                            
+                            </div>
+
+
+
+                            
+
+                        </div>
+                        
+            
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="col col-sm-2">
+        
+        </div>
+    </div>
+
+    <div class="container   fixed-top ">
+        <!-- container-fluid -->
+        <!-- style="position: absolute;" -->
+    
+        <div class="">
+            <!-- container fixed -->
+            <!-- container-fluid -->
+            <!-- style="position: absolute;" -->
+            
+        </div>
+    
+    </div>
+
+
+    
+    
+    <div>
+        <router-outlet></router-outlet>
+    </div>
+
+</div>

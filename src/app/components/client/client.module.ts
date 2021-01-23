@@ -22,6 +22,6 @@ import { ClientRoutingModule } from './client-routing.module';
   ],
   providers: [ClientService],
   bootstrap: [],
-  exports: [ClientsListComponent, CreateClientComponent],
+  exports: [],
 })
 export class ClientModule {}

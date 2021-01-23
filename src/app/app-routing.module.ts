@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'ccps', pathMatch: 'full' },
-  { path: '**', redirectTo: 'ccps', pathMatch: 'full' },
+  { path: 'home', redirectTo: 'clients', pathMatch: 'full' },
+  { path: '', redirectTo: 'clients', pathMatch: 'full' },
+  { path: '**', redirectTo: 'clients', pathMatch: 'full' },
 ];
 
 @NgModule({
