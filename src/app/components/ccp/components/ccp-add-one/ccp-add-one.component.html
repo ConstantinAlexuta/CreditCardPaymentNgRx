@@ -1,24 +1,60 @@
 <div class="container py-4 my-4">
 
-    <h3 class="my-4">Add a new {{itemName}} item</h3>
+    <!-- <br> ccpFormGroup.value.creditCardNumber >>>> {{ccpFormGroup.value.creditCardNumber | json }} -->
+    <!-- <br> ccpFormGroup.valid >>>> {{ccpFormGroup.valid }} -->
+    <!-- <br> ccpSavedFromForm >>>> {{ccpSavedFromForm | json}}
+    <br> isSavedSuccessfully >>>> {{isSavedSuccessfully}}
+    <br> ccpSavedFromDBIndex >>>> {{ccpSavedFromDBIndex}}
+    <br> ccpSavedFromFormId >>>> {{ccpSavedFromFormId}}
+    <br> ccpsLengthFromDB >>>> {{ccpsLengthFromDB}}
+     -->
+    
+    
 
-    <form [formGroup]="ccpFormGroup" (ngSubmit)="!isAlreadySaved && onSubmit(ccpFormGroup)" novalidate>
+    <h3 class="mt-0 mb-4">Add a new {{itemNameDisplayed}} item</h3>
 
-        <div class="form-group">
-            <label>Credit Card Number</label>
-            <label style="color: red">&nbsp;*</label>
-            <input type="text" class="form-control form-control-sm" 
-            formControlName="creditCardNumber" 
-            readonly="{{readonlyAfterSave}}" 
-            required        
-            placeholder=""        
-            autofocus />
-        </div>
+    <!-- #formDir="ngForm" -->
+    <form [formGroup]="ccpFormGroup"  (ngSubmit)="!isSavedSuccessfully && onSubmit(ccpFormGroup)" novalidate>
+
+        <!-- [hidden]="formDir.submitted" -->
+        <div>
+
+            <div class="form-group">
+                <label for="creditCardNumber">Credit Card Number</label>
+                <label for="creditCardNumber" style="color: red">&nbsp;*</label>
+                <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.value.creditCardNumber.invalid 
+                                 && (ccpFormGroup.value.creditCardNumber.dirty 
+                                    || ccpFormGroup.value.creditCardNumber.touched)" class="alert alert-danger">
+                    <label for="creditCardNumber" *ngIf="ccpFormGroup.value.creditCardNumber.errors.required">
+                        This data is required.
+                    </label>
+                </label> -->
+                <!-- <label for="creditCardNumber" *ngIf="!ccpFormGroup.creditCardNumber.dirty">
+                    ccpFormGroup.value.creditCardNumber.invalid
+                </label> -->
+                <label>
+                    <!-- {{ccpFormGroup.value | json}} -->
+                </label>
+                <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.valid">
+                    ccpFormGroup.valid
+                </label>
+                <label for="creditCardNumber" *ngIf="!ccpFormGroup.valid">
+                    !ccpFormGroup.valid
+                </label> -->
+                <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.valid" style="color: red">&nbsp;TESTE</label> -->
+                <!-- <label for="creditCardNumber" *ngIf="!ccpFormGroup.valid" style="color: red">&nbsp;TESTE</label> -->
+                <input id="creditCardNumber"  formControlName="creditCardNumber" 
+                    class="form-control form-control-sm" 
+                    maxlength="16"
+                    readonly="{{readonlyAfterSave}}" required autofocus />
+                <!-- <div *ngIf="creditCardNumber.invalid && (creditCardNumber.dirty || creditCardNumber.touched)" class="alert alert-danger"></div> -->
+            </div>
 
         <div class="form-group">
             <label>Card Holder</label>
             <label style="color: red">&nbsp;*</label>
             <input type="text" class="form-control form-control-sm" 
+            id="cardHolder"
             formControlName="cardHolder" 
             readonly="{{readonlyAfterSave}}" 
             required        
@@ -30,6 +66,7 @@
             <label>Expiration Date</label>
             <label style="color: red">&nbsp;*</label>
             <input type="text" class="form-control form-control-sm" 
+            id="expirationDate"
             formControlName="expirationDate" 
             readonly="{{readonlyAfterSave}}" 
             required        
@@ -41,6 +78,7 @@
             <label>Amount</label>
             <label style="color: red">&nbsp;*</label>
             <input type="text" class="form-control form-control-sm" 
+            id="amount"
             formControlName="amount" 
             readonly="{{readonlyAfterSave}}" 
             required        
@@ -52,6 +90,7 @@
             <label>Security Code (CCV)</label>
             <label style="color: red">&nbsp;*</label>
             <input type="text" class="form-control form-control-sm" 
+            id="securityCodeCCV"
             formControlName="securityCodeCCV" 
             readonly="{{readonlyAfterSave}}" 
             required        
@@ -86,68 +125,71 @@
             </select>
         </div> -->
 
-        <button type="submit" class="btn btn-outline-secondary px-4 mx-4 my-4"
-        >
-        <!-- (click)="onClickSaveTwice()" -->
-            Save
+        <button type="submit" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2">
+            Save item
         </button>
 
-        <div *ngIf="showMessageOnClikedSaveTwice">
-            <h6 style="color: blue">{{messageOnClikedSaveTwice}}</h6>
+        <button type="reset" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2"  
+            (click)="onClearForm()">
+            Clear form
+        </button>
+
+        <button *ngIf="showFillForm" type="button" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
+            (click)="onFillForm()">
+            Fill form
+        </button>
+
+        <div class="mt-3">
+
+            <div *ngIf="showMessageAlreadySubmitted">
+                <h6 style="color: blue">{{messageAlreadySubmitted}}</h6>
+            </div>
+            
+            <div *ngIf="showFailureMessageOnSaving">
+                <h6 style="color: red;">{{messageFailureForFirstAttemptToSave}}</h6>
+            </div>
+            
+            
+            <div>
+                <p class="has-info">
+                    <span *ngIf="validMessage != ''">
+                        {{validMessage}}
+                    </span>
+                    <span *ngIf="showNewItemCreatedIndexMessage" style="color:blue">
+                        {{newItemCreatedIndexMessage}}
+                    </span>
+                </p>
+            </div>
+
+            <div *ngIf="isSavedSuccessfully">
+            
+                <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" (click)="reloadComponent()">
+                    Create new
+                </button>
+            
+                <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" [routerLink]="['../view-all']">
+                    Back to all
+                </button>
+            
+                <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" (click)="goToLastSavedItemView()">
+                    View the saved item
+                </button>
+            
+                <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" (click)="goToLastSavedItemEditView()">
+                    Edit the saved item
+                </button>
+            
+            </div>
+
         </div>
 
-        <div *ngIf="firstAttemptToSaveWasDone && !isSavedSuccessfully">
-            <h6 style="color: red;">{{messageFailureForFirstAttemptToSave}}</h6>
+        
+
         </div>
 
-
-        <div>
-            <p class="has-info">
-                <span *ngIf="validMessage != ''">
-                    {{validMessage}}
-                </span>
-                <span *ngIf="showNewItemCreatedIdMessage" style="color:blue">
-                    {{newItemCreatedIdMessage}}
-                </span>
-            </p>
-        </div>
-
-        <!-- <div *ngIf="validMessage != ''">
-            <h6 class="has-info">{{validMessage}}</h6>
-        </div>
-
-        <div *ngIf="showNewItemCreatedIdMessage">
-            <h6 class="has-info" style="color:blue">{{newItemCreatedIdMessage}}</h6>
+        <!-- <div [hidden]="!formDir.submitted">
+            Item was saved.
         </div> -->
-
-        <div *ngIf="isSavedSuccessfully">
-
-            <!-- [routerLink]="['add-one']" -->
-                <!-- (click)="reloadThisPage()" -->
-            <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
-            (click)="reloadComponent()"
-            >
-                Create new
-            </button>
-
-            <!-- {{router.url}} -->
-            <!-- {{currentRouteUrl}} -->
-
-            <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" [routerLink]="['../view-all']">
-                Back to all
-            </button>
-
-            <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" 
-            (click)="goToLastSavedItemView()">
-                View the saved item
-            </button>
-
-            <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2"
-                (click)="goToLastSavedItemEditView()">
-                Edit the saved item
-            </button>
-
-        </div>
 
     </form>
 

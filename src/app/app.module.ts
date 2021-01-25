@@ -18,9 +18,10 @@ import { ClientResolver } from './components/client/resolver/client.resolver';
 
 import { CcpModule } from './components/ccp/ccp.module';
 import { CcpResolver } from './components/ccp/resolver/ccp.resolver';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, HomeComponent],
 
   imports: [
     ClientModule,

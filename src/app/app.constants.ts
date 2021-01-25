@@ -9,3 +9,5 @@ export const D_CTMWRSOS: number = 200; // checkThatModificationWasReallySavedOnS
 
 // export const SERVER_API_V1: string = '/server/api/v1/';
 export const SERVER_API_V1: string = 'assets/database-json/ccps-db.json';
+
+export const CCPS_PATH: string = 'assets/database-json/ccps-db.json';

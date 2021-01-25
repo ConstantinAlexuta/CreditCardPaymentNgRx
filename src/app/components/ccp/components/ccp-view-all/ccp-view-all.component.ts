@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-// import { SERVER_API_V1 } from 'src/app/app.constants';
-// import { ItemService } from 'src/app/shared/services/item.service';
 import { Ccp } from '../../model/ccp.model';
 import { ccpActionTypes } from '../../state/ccp.actions';
 import { AppState } from 'src/store/reducers';
@@ -15,57 +13,37 @@ import { Update } from '@ngrx/entity';
   styleUrls: ['./ccp-view-all.component.scss'],
 })
 export class CcpViewAllComponent implements OnInit {
-  //
-  // ###################################################
-  itemNameItem: string = 'ccp';
-  itemDashItem: string = 'ccp';
-  // path: string = SERVER_API_V1 + this.itemDashItem; //  e.g.:  '/server/api/v1/ccp';
-  // items!: Array<Ccp>;
+  itemCapitalizeFullName: string = 'Credit Card Payment';
+  itemCamelName: string = 'ccp';
+  itemLowerCaseDashName: string = 'ccp';
 
-  // itemHeaders: string[] = [
-  //   'Id',
-  //   'Credit Card Number',
-  //   'Card Holder',
-  //   'Expiration Date',
-  //   'Amount',
-  //   'Security Code (CCV)',
-  // ];
-  // itemFields: string[] = [
-  //   'id',
-  //   'creditCardNumber',
-  //   'cardHolder',
-  //   'expirationDate',
-  //   'amount',
-  //   'securityCodeCCV',
-  // ];
-  // ###################################################
-
-  ccps!: Observable<Ccp[]>;
-
-  ccpToBeUpdated!: Ccp | null;
-
-  isUpdateActivated: boolean = false;
+  items!: Observable<Ccp[]>;
 
   constructor(private store: Store<AppState>) {}
 
   ngOnInit() {
-    this.ccps = this.store.select(getCcps);
+    this.items = this.store.select(getCcps);
+    console.log(this.itemCapitalizeFullName + ' items was loaded from server');
+    this.showItemListEmptyMessageAfterDelayIfNoItemsOrNoDatabaseConnection();
   }
 
   deleteCcp(ccpId: string | number) {
     this.store.dispatch(ccpActionTypes.deleteCcp({ ccpId }));
   }
 
+  itemToBeUpdated!: Ccp | null;
+  isUpdateActivated: boolean = false;
+
   showUpdateCcpForm(ccp: Ccp) {
-    this.ccpToBeUpdated = { ...ccp };
+    this.itemToBeUpdated = { ...ccp };
     this.isUpdateActivated = true;
   }
 
   updateCcp(updateCcpForm: any) {
     const update: Update<Ccp> = {
-      id: this.ccpToBeUpdated!.id!,
+      id: this.itemToBeUpdated!.id!,
       changes: {
-        ...this.ccpToBeUpdated,
+        ...this.itemToBeUpdated,
         ...updateCcpForm.value,
       },
     };
@@ -74,34 +52,21 @@ export class CcpViewAllComponent implements OnInit {
 
     this.isUpdateActivated = false;
 
-    this.ccpToBeUpdated = null;
+    this.itemToBeUpdated = null;
   }
-
-  // async ngOnInit(): Promise<void> {
-  //   await this.getItems();
-  //   this.showItemListEmptyMessageAfterDelay();
-  // }
-
-  // async getItems() {
-  //   (await this.itemService.getItems(this.path)).subscribe(
-  //     (data) => {
-  //       this.items = data;
-  //       console.log(data);
-  //     },
-  //     (err) => {
-  //       console.error(err);
-  //     },
-  //     () => {
-  //       console.log(this.itemNameItem + ' items was loaded from server');
-  //     }
-  //   );
-  // }
 
   isAfterDelay: boolean = false;
 
-  // showItemListEmptyMessageAfterDelay() {
-  //   setTimeout(() => {
-  //     this.isAfterDelay = true;
-  //   }, 1500);
-  // }
+  showItemListEmptyMessageAfterDelayIfNoItemsOrNoDatabaseConnection() {
+    setTimeout(() => {
+      this.isAfterDelay = true;
+    }, 500);
+  }
+
+  showInternalIdColumnAndHideOptionsButtons: boolean = false;
+
+  toggleShowInternalIdColumnAndHideOptionsButtons() {
+    this.showInternalIdColumnAndHideOptionsButtons = !this
+      .showInternalIdColumnAndHideOptionsButtons;
+  }
 }

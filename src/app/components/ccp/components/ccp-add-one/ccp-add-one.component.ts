@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { Status } from 'src/app/shared/classes/status';
 import { Ccp } from '../../model/ccp.model';
 import { CcpService } from '../../service/ccp.service';
 
@@ -10,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { AppState } from 'src/store/reducers';
 import { Store } from '@ngrx/store';
 import { createCcp } from '../../state/ccp.actions';
+import { Observable } from 'rxjs';
+import { getCcps } from '../../state/ccp.selectors';
 
 @Component({
   selector: 'app-ccp-add-one',
@@ -17,11 +18,21 @@ import { createCcp } from '../../state/ccp.actions';
   styleUrls: ['./ccp-add-one.component.scss'],
 })
 export class CcpAddOneComponent implements OnInit {
-  public ccpFormGroup!: FormGroup;
+  itemCapitalizeFullName: string = 'Credit Card Payment';
+  itemCamelName: string = 'ccp';
+  itemLowerCaseDashName: string = 'ccp';
+  itemNameDisplayed: string = 'Credit Card Payment';
 
-  validMessage: string = '';
-  // currentRouteUrl: string = this.activatedRoute.toString();
-  currentRouteUrl: string = 'DEFAULT';
+  ccpsLengthFromDB: number = -1;
+
+  ccpSavedFromForm!: Ccp;
+  ccpSavedFromFormId: string = 'none';
+
+  ccpSavedFromDB!: Ccp;
+  ccpSavedFromDBId: string = 'none';
+  ccpSavedFromDBIndex: number = -1;
+
+  public ccpFormGroup!: FormGroup;
 
   constructor(
     private store: Store<AppState>,
@@ -29,229 +40,267 @@ export class CcpAddOneComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {
-    // router.events.subscribe((url: any) => {
-    this.currentRouteUrl = this.router.url;
-    // });
-    // console.log(router.url); // to print only path eg:"/login"
-  }
-
-  itemName: string = 'Credit Card Payment';
-
-  ngOnInit(): void {
     this.ccpFormGroup = new FormGroup({
-      creditCardNumber: new FormControl('', Validators.required),
-      cardHolder: new FormControl('', Validators.required),
-      expirationDate: new FormControl('', Validators.required),
-      amount: new FormControl('', Validators.required),
-      securityCodeCCV: new FormControl('', Validators.required),
+      creditCardNumber: new FormControl(
+        '',
+        // this.ccp.creditCardNumber,
+        [
+          // Validators.required,
+          // Validators.minLength(16),
+        ]
+      ),
+      cardHolder: new FormControl('', [
+        // Validators.required,
+        // Validators.minLength(2),
+      ]),
+      expirationDate: new FormControl('', [
+        // Validators.required,
+        // Validators.minLength(10),
+      ]),
+      amount: new FormControl('', [
+        // Validators.required,
+        // Validators.minLength(1),
+      ]),
+      securityCodeCCV: new FormControl('', [
+        // Validators.required,
+        // Validators.minLength(3),
+      ]),
       // status: new FormControl('', Validators.required),
     });
-    // this.isSavedSuccessfully = false;
   }
 
-  createdCcp!: Ccp;
+  ngOnInit(): void {}
 
-  readonlyAfterSave = '';
-  isAlreadySaved: boolean = false;
+  onClearForm() {
+    this.readonlyAfterSave = '';
+    this.isSavedSuccessfully = false;
+    this.validMessage = '';
+    this.showFillForm = true;
 
-  firstAttemptToSaveWasDone: boolean = false;
-  messageFailureForFirstAttemptToSave: string =
-    'Failure on saving! The attempt to save the item on server was without success. Unknown cause! Please retry.';
+    this.ccpSavedFromFormId = 'none';
+    this.ccpSavedFromDBId = 'none';
+    this.ccpSavedFromDBIndex = -1;
+
+    this.enableClearFormAndFillFormCommonActions();
+  }
+
+  public ccpDefault: Ccp = {
+    id: uuidv4(),
+    creditCardNumber: '1234123412341234',
+    cardHolder: 'Demo name',
+    expirationDate: '09/22/2025',
+    amount: '220.05',
+    securityCodeCCV: '928',
+  };
+
+  showFillForm: boolean = true;
+
+  onFillForm() {
+    this.ccpFormGroup.patchValue({
+      id: this.ccpDefault.id,
+      creditCardNumber: this.ccpDefault.creditCardNumber,
+      cardHolder: this.ccpDefault.cardHolder,
+      expirationDate: this.ccpDefault.expirationDate,
+      amount: this.ccpDefault.amount,
+      securityCodeCCV: this.ccpDefault.securityCodeCCV,
+    });
+
+    this.validMessage = '';
+    this.enableClearFormAndFillFormCommonActions();
+  }
+
+  enableClearFormAndFillFormCommonActions() {
+    this.isSavedSuccessfully = false;
+    this.showMessageAlreadySubmitted = false;
+    this.showNewItemCreatedIndexMessage = false;
+    this.firstAttemptToSaveWithValidFormWasDone = false;
+  }
+
+  validMessage: string = '';
 
   onSubmit(submittedForm: any) {
-    console.log(submittedForm.value);
+    this.showNewItemCreatedIndexMessage = false;
+
+    console.log('form submitted to be save: ' + submittedForm.value);
+
+    if (this.isSavedSuccessfully) {
+      this.enableShowMessageAlreadySubmitted();
+    }
 
     if (submittedForm.invalid) {
+      this.validMessage =
+        'Please fill out the required fields with valid inputs before submitting the form!';
+      this.isSavedSuccessfully = false;
+      console.log('form submitted to be saved is INVALID');
+
+      this.firstAttemptToSaveWithValidFormWasDone = false;
+
       return;
-    }
-
-    const ccp: Ccp = {
-      id: uuidv4(),
-      creditCardNumber: submittedForm.value.creditCardNumber,
-      cardHolder: submittedForm.value.cardHolder,
-      expirationDate: submittedForm.value.expirationDate,
-      amount: submittedForm.value.amount,
-      securityCodeCCV: submittedForm.value.securityCodeCCV,
-    };
-
-    this.store.dispatch(createCcp({ ccp }));
-
-    /*
-    if (this.ccpFormGroup.valid) {
-      this.validMessage = 'Your new ccp has been submitted.';
-
-      this.ccpService.createCcp(this.ccpFormGroup.value);
-
-      this.firstAttemptToSaveWasDone = true;
+    } else {
+      // if submittedForm is valid
 
       this.readonlyAfterSave = 'readonly';
-      this.isAlreadySaved = true;
 
-      this.isSavedSuccessfully = true;
+      this.showFillForm = false;
 
-      await this.getLastNewIdSaved();
-      await this.getLastNewIdSaved();
-      // this.showNewItemCreatedIdMessage = true;
+      this.firstAttemptToSaveWithValidFormWasDone = true;
 
-      // this.getLastNewIdSaved();
+      const ccp: Ccp = {
+        id: uuidv4(),
+        creditCardNumber: submittedForm.value.creditCardNumber,
+        cardHolder: submittedForm.value.cardHolder,
+        expirationDate: submittedForm.value.expirationDate,
+        amount: submittedForm.value.amount,
+        securityCodeCCV: submittedForm.value.securityCodeCCV,
+      };
 
-      if (this.isSavedSuccessfully) {
-        this.showNewItemCreatedId();
-      }
-
-      // .subscribe(
-      //   (data) => {
-      //     this.ccpFormGroup.reset();
-      //     this.isSavedSuccessfully = true;
-      //     this.getSavedObjectId();
-      //     this.savedItemId = this.updatedCcps.size;
-      //     return true;
-      //   },
-      //   (error) => {
-      //     return Observable.throw(error);
-      //   }
-      // );
-    } else {
+      this.ccpSavedFromForm = { ...ccp };
+      this.store.dispatch(createCcp({ ccp }));
       this.validMessage =
-        'Please fill out the required fields of the form before submitting!';
-      this.isSavedSuccessfully = false;
-      this.firstAttemptToSaveWasDone = false;
-      this.isAlreadySaved = false;
-      this.numberClickedOnSaveWithSuccess = 0;
-      this.ifSavingWasWithFailureOnServerSoUnblockFormFields();
+        'Your new ' + this.itemCapitalizeFullName + ' item has been submitted.';
+
+      this.verifyIfIsSavedSuccessfully();
+
+      setTimeout(() => {
+        if (this.isSavedSuccessfully) {
+          this.showNewItemCreatedIndexdIfSavedSuccessfully();
+        } else {
+          this.enableToShowFailureMessageOnSaving();
+        }
+      }, 1200);
     }
-
-    */
   }
-
-  // onSubmit() {
-  //   if (this.ccpFormGroup.valid) {
-  //     this.validMessage = 'Your new ccp has been submitted.';
-  //     this.ccpService
-  //       .createCcp(this.ccpFormGroup.value)
-  //       .subscribe(
-  //         (data) => {
-  //           this.ccpFormGroup.reset();
-  //           this.isSavedSuccessfully = true;
-  //           this.getSavedObjectId();
-  //           this.savedItemId = this.updatedCcps.size;
-  //           return true;
-  //         },
-  //         (error) => {
-  //           return Observable.throw(error);
-  //         }
-  //       );
-  //   } else {
-  //     this.validMessage =
-  //       'Please fill out the required fields of the form before submitting!';
-  //     this.isSavedSuccessfully = false;
-  //   }
-  // }
 
   isSavedSuccessfully: boolean = false;
-  savedItemId: number = -1;
 
-  updatedCcps: any;
+  verifyIfIsSavedSuccessfully() {
+    this.isSavedSuccessfully = false;
 
-  getSavedObjectId() {
-    this.ccpService.getCcps().subscribe(
-      (data) => {
-        this.updatedCcps = data;
-      },
-      (err) => console.error(err),
-      () => console.log('updatedCcps loaded to find the last offer saved id')
-    );
+    setTimeout(() => {
+      this.getUpdatedIndexFromDatabase();
+    }, 500);
   }
 
-  numberClickedOnSaveWithSuccess: number = 0;
-  showMessageOnClikedSaveTwice: boolean = false;
-  messageOnClikedSaveTwice: string = 'This item was already saved.';
-  onClickSaveTwice() {
-    this.numberClickedOnSaveWithSuccess++;
-    if (this.numberClickedOnSaveWithSuccess == 2) {
-      this.showMessageOnClikedSaveTwice = true;
-      this.validMessage = '';
+  getUpdatedIndexFromDatabase() {
+    let ccps: Observable<Ccp[]> = this.store.select(getCcps);
+
+    ccps.forEach((ccpsArray) => {
+      this.ccpsLengthFromDB = ccpsArray.length;
+
+      ccpsArray.forEach((ccp) => {
+        if (this.ccpsAreEquals(ccp, this.ccpSavedFromForm)) {
+          this.ccpSavedFromDBId = ccp.id + '';
+
+          this.ccpSavedFromDBIndex = ccpsArray.indexOf(ccp);
+
+          this.ccpSavedFromDB = { ...ccp };
+
+          this.isSavedSuccessfully = true;
+        }
+      });
+    });
+  }
+
+  ccpsAreEquals(ccp1: Ccp, ccp2: Ccp): boolean {
+    if (
+      ccp1.id !== ccp2.id ||
+      ccp1.creditCardNumber !== ccp2.creditCardNumber ||
+      ccp1.cardHolder !== ccp2.cardHolder ||
+      ccp1.expirationDate !== ccp2.expirationDate ||
+      ccp1.amount !== ccp2.amount ||
+      ccp1.securityCodeCCV !== ccp2.securityCodeCCV
+    ) {
+      return false;
+    } else {
+      return true;
     }
   }
 
-  ifSavingWasWithFailureOnServerSoUnblockFormFields() {
-    if (this.firstAttemptToSaveWasDone && !this.isSavedSuccessfully) {
-      this.readonlyAfterSave = '';
-      this.isAlreadySaved = false;
-    }
+  showMessageAlreadySubmitted: boolean = false;
+
+  messageAlreadySubmitted: string = 'This item was already saved.';
+
+  enableShowMessageAlreadySubmitted() {
+    this.showMessageAlreadySubmitted = true;
+    this.validMessage = '';
+
+    setTimeout(() => {
+      this.showMessageAlreadySubmitted = false;
+    }, 7000);
   }
 
-  reloadThisPage() {
-    // this.router.navigate(['../add-one?refresh=1']);
-    // this.router.navigate([this.router.url + '?refresh=1']);
-    // this.router.navigate([this.currentRouteUrl + '?refresh=1']);
-    // this.router.navigate(['../ccp/add-one']);
-    // ccp/add-one
-  }
+  readonlyAfterSave = '';
 
   reloadComponent() {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
-    // this.router.navigate(['/same-route']);
-    this.router.navigate([this.currentRouteUrl]);
-  }
-
-  lastNewIdSaved: number = -1;
-  async getLastNewIdSaved() {
-    this.ccpService.getCcps().subscribe((data) => {
-      this.lastNewIdSaved = +data.reverse().find((x) => x.id)?.id!;
-    });
+    this.router.navigate([this.router.url]);
   }
 
   goToLastSavedItemView() {
-    this.getLastNewIdSaved();
-    this.getLastNewIdSaved(); // let them two
+    this.getUpdatedIndexFromDatabase();
 
-    this.router.navigate(['../ccp/view-one', +this.lastNewIdSaved]);
-    // 'ccp/view-one/36/view';
+    this.router.navigate([
+      '../ccps/view-one',
+      +this.ccpSavedFromDBIndex,
+      'view',
+    ]);
   }
 
   goToLastSavedItemEditView() {
-    this.getLastNewIdSaved();
-    this.getLastNewIdSaved(); // let them two
+    this.getUpdatedIndexFromDatabase();
 
     this.router.navigate([
-      // '../ccp/view-one',
-      // +this.lastNewIdSaved,
-      // +'edit',
-      '../ccp/view-one/' + +this.lastNewIdSaved + '/edit',
+      '../ccps/view-one',
+      +this.ccpSavedFromDBIndex,
+      'edit',
     ]);
-    // 'ccp/view-one/36/edit';
   }
 
-  showNewItemCreatedIdMessage: boolean = false;
-  newItemCreatedIdMessage: string = '';
-  async showNewItemCreatedId() {
-    await this.delay(1000);
-    this.getLastNewIdSaved();
-    this.getLastNewIdSaved(); // let them two
+  showNewItemCreatedIndexMessage: boolean = false;
 
-    // await this.delay(300);
-    // this.getLastNewIdSaved();
-    await this.delay(2000);
-    this.newItemCreatedIdMessage =
-      // Success feedback from server database.
-      'The new item created has the id ' + +this.lastNewIdSaved + '.';
-    this.showNewItemCreatedIdMessage = true;
+  newItemCreatedIndexMessage: string = '';
+
+  showNewItemCreatedIndexdIfSavedSuccessfully() {
+    this.newItemCreatedIndexMessage =
+      'The new item was saved successfully' +
+      (this.ccpSavedFromDBIndex != -1 && this.ccpSavedFromDBIndex != 0
+        ? ' and has the index ' + this.ccpSavedFromDBIndex
+        : '') +
+      '.';
+
+    if (this.isSavedSuccessfully) {
+      this.showNewItemCreatedIndexMessage = true;
+    } else {
+      this.showNewItemCreatedIndexMessage = false;
+      this.showNewItemCreatedIndexMessage = false;
+    }
+
+    setTimeout(() => {
+      this.showNewItemCreatedIndexMessage = false;
+    }, 7000);
+  }
+
+  firstAttemptToSaveWithValidFormWasDone: boolean = false;
+
+  messageFailureForFirstAttemptToSave: string =
+    'Failure on saving! The attempt to save the item on server was without success. Unknown cause! Please retry.';
+
+  showFailureMessageOnSaving: boolean = false;
+  enableToShowFailureMessageOnSaving() {
+    if (
+      this.firstAttemptToSaveWithValidFormWasDone &&
+      !this.isSavedSuccessfully
+    ) {
+      this.showFailureMessageOnSaving = true;
+    }
+
+    setTimeout(() => {
+      this.showFailureMessageOnSaving = false;
+    }, 7000);
   }
 
   delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-
-  statuses: Status[] = [
-    { value: 'NEW' },
-    { value: 'DRAFT' },
-    { value: 'VERIFIED' },
-    { value: 'APPROVED' },
-    { value: 'ACTIVE' },
-    { value: 'INCOMPLETE' },
-    { value: 'DISABLED' },
-    { value: 'ARCHIVED' },
-  ];
 }

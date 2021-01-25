@@ -35,8 +35,8 @@ import { CcpService } from './service/ccp.service';
     CommonModule,
     CcpRoutingModule,
 
-    FormsModule,
     ReactiveFormsModule,
+    FormsModule,
 
     StoreModule.forFeature('ccps', ccpReducer),
     EffectsModule.forFeature([CcpEffects]),

@@ -12,6 +12,15 @@
 <BR> currentId >> {{currentId}}
 <br> pathId >> {{pathId}} -->
 
+<br> currentId: {{currentId}}
+<br> items: {{items | json}}
+<!-- <br> ccps: {{ccps.toPromise() | json}} -->
+<br> ccp: {{ccp | json}}
+<!-- <br> ccp.id: {{ccp.id | json}} -->
+<br> ccps[3]: {{ccps[3] | json}}
+<br> ccps[3]: {{ccps[3].cardHolder | json}}
+
+
 
 <div *ngIf="item">
 
