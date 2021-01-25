@@ -248,6 +248,7 @@ export class CcpAddOneComponent implements OnInit {
   }
 
 
+
   goToLastSavedItemEditView() {
     this.getUpdatedIndexFromDatabase();
 
