@@ -34,14 +34,13 @@ export class CcpAddOneComponent implements OnInit {
   public ccpFormGroup!: FormGroup;
 
   fixedlength_creditCardNumber: number = 16;
+  fixedlength_expirationDate: number = 10;
   fixedlength_securityCodeCCV: number = 3;
 
   minlength_cardHolder: number = 2;
-  minlength_expirationDate: number = 10;
   minlength_amount: number = 1;
 
   maxlength_cardHolder: number = 100;
-  maxlength_expirationDate: number = 10;
   maxlength_amount: number = 20;
 
   constructor(private store: Store<AppState>, private router: Router) {
@@ -50,16 +49,25 @@ export class CcpAddOneComponent implements OnInit {
         Validators.required,
         Validators.minLength(this.fixedlength_creditCardNumber),
         Validators.maxLength(this.fixedlength_creditCardNumber),
+        this.noSpacesValidator,
+        this.onlyDigitsValidator,
       ]),
       cardHolder: new FormControl('', [
         Validators.required,
         Validators.minLength(this.minlength_cardHolder),
         Validators.maxLength(this.maxlength_cardHolder),
+        this.noSpacesAtMarginsValidator,
+        this.startWithCharacterValidator,
       ]),
       expirationDate: new FormControl('', [
         Validators.required,
-        Validators.minLength(this.minlength_expirationDate),
-        Validators.maxLength(this.maxlength_expirationDate),
+        Validators.minLength(this.fixedlength_expirationDate),
+        Validators.maxLength(this.fixedlength_expirationDate),
+        this.isValidDateMMDDYYYYValidator,
+        this.isValidDateAndNotInThePastMMDDYYYYValidator,
+        this.isValidPresentOrFuture100YearInDateMMDDYYYYValidator,
+        this.isValidPresentOrFutureMonthInDateMMDDYYYYValidator,
+        this.isValidPresentOrFutureDayInDateMMDDYYYYValidator,
       ]),
       amount: new FormControl('', [
         Validators.required,
@@ -87,6 +95,12 @@ export class CcpAddOneComponent implements OnInit {
       : { spacesArePresent: true };
   }
 
+  noSpacesAtMarginsValidator(control: FormControl) {
+    return control.value.trim().length == control.value.length
+      ? null
+      : { spacesArePresentAtMargins: true };
+  }
+
   onlyNumberValidator(control: FormControl) {
     let isNumber =
       control.value != null &&
@@ -107,6 +121,19 @@ export class CcpAddOneComponent implements OnInit {
       control.value.length;
 
     return isNumber && noDotOrComma ? null : { areNotOnlyDigits: true };
+  }
+
+  startWithCharacterValidator(control: FormControl) {
+    let firstChar = control.value.charAt(0);
+    let firstCharIsDigit =
+      firstChar != null &&
+      firstChar !== '' &&
+      firstChar !== ' ' &&
+      !isNaN(Number((firstChar + '').toString()));
+
+    return !firstCharIsDigit
+      ? null
+      : { anExpectedStringNameStartWithDigit: true };
   }
 
   noCommaValidator(control: FormControl) {
@@ -139,9 +166,187 @@ export class CcpAddOneComponent implements OnInit {
       : { moreThanTwoDecimals: true };
   }
 
+  isValidDateMMDDYYYYValidator(control: FormControl) {
+    let dateString = control.value;
+
+    // First check for the pattern
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    // Parse the date parts to integers
+    var parts = dateString.split('/');
+    var day = parseInt(parts[1], 10);
+    var month = parseInt(parts[0], 10);
+    var year = parseInt(parts[2], 10);
+
+    // Check the ranges of month and year
+    if (year < 1000 || year > 3000 || month == 0 || month > 12) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Adjust for leap years
+    if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
+      monthLength[1] = 29;
+    }
+
+    // Check the range of the day
+    return day > 0 && day <= monthLength[month - 1]
+      ? null
+      : { dateIsNotValidInMMDDYYYY: true };
+  }
+
+  isValidDateAndNotInThePastMMDDYYYYValidator(control: FormControl) {
+    let dateString = control.value;
+
+    let currentDate: any = new Date();
+    let currentYear = +currentDate.getFullYear();
+    let currentMonth = +currentDate.getMonth() + 1;
+    let currentDay = +currentDate.getDate();
+
+    // First check for the pattern
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    // Parse the date parts to integers
+    var parts = dateString.split('/');
+    var day = parseInt(parts[1], 10);
+    var month = parseInt(parts[0], 10);
+    var year = parseInt(parts[2], 10);
+
+    // Check the ranges of month and year
+    if (year < 1000 || year > 3000 || month == 0 || month > 12) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Adjust for leap years
+    if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
+      monthLength[1] = 29;
+    }
+
+    // Check the range of the day
+    let isValidDay = day > 0 && day <= monthLength[month - 1];
+
+    let isPresentOrFutureYear =
+      year >= currentYear && year <= currentYear + 100;
+
+    let isPresentOrFutureMonth =
+      year > currentYear || (year == currentYear && month >= currentMonth);
+
+    let isPresentOrFutureDay =
+      year > currentYear ||
+      (year == currentYear && month > currentMonth) ||
+      (year == currentYear && month == currentMonth && day >= currentDay);
+
+    return isValidDay &&
+      isPresentOrFutureYear &&
+      isPresentOrFutureMonth &&
+      isPresentOrFutureDay
+      ? null
+      : {
+          dateIsValidButInThePastMMDDYYYY: true,
+        };
+  }
+
+  currentDate: any = new Date();
+  currentYear = +this.currentDate.getFullYear();
+  currentMonth = +this.currentDate.getMonth() + 1;
+  currentDay = +this.currentDate.getDate();
+
+  isValidPresentOrFuture100YearInDateMMDDYYYYValidator(control: FormControl) {
+    let dateString = control.value;
+
+    let currentDate: any = new Date();
+    let currentYear = +currentDate.getFullYear();
+
+    // First check for the pattern
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    // Parse the date parts to integers
+    var parts = dateString.split('/');
+    var year = parseInt(parts[2], 10);
+
+    // Check the ranges year
+
+    return year >= currentYear && year <= currentYear + 100
+      ? null
+      : { yearIsNotInPresentOrFuture100ValidInDateMMDDYYYY: true };
+  }
+
+  isValidPresentOrFutureMonthInDateMMDDYYYYValidator(control: FormControl) {
+    let dateString = control.value;
+
+    let currentDate: any = new Date();
+    let currentYear = +currentDate.getFullYear();
+    let currentMonth = +currentDate.getMonth() + 1;
+
+    // First check for the pattern
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    // Parse the date parts to integers
+    var parts = dateString.split('/');
+    var month = parseInt(parts[0], 10);
+    var year = parseInt(parts[2], 10);
+
+    return !(currentYear == year && month < currentMonth)
+      ? null
+      : { monthIsNotInPresentOrFutureInCurrentYearInDateMMDDYYYY: true };
+  }
+
+  isValidPresentOrFutureDayInDateMMDDYYYYValidator(control: FormControl) {
+    let dateString = control.value;
+
+    let currentDate: any = new Date();
+    let currentYear = +currentDate.getFullYear();
+    let currentMonth = +currentDate.getMonth() + 1;
+    let currentDay = +currentDate.getDate();
+
+    // First check for the pattern
+    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+      return { dateIsNotValidInMMDDYYYY: true };
+    }
+
+    // Parse the date parts to integers
+    var parts = dateString.split('/');
+    var day = parseInt(parts[1], 10);
+    var month = parseInt(parts[0], 10);
+    var year = parseInt(parts[2], 10);
+
+    return !(currentYear == year && currentMonth == month && day < currentDay)
+      ? null
+      : { dayIsNotInPresentOrFutureInCurrentMonthAndYearInDateMMDDYYYY: true };
+  }
+
   ngOnInit(): void {}
 
   onClearForm() {
+    this.ccpFormGroup.patchValue({
+      id: uuidv4(),
+      creditCardNumber: '',
+      cardHolder: '',
+      expirationDate: '',
+      amount: '',
+      securityCodeCCV: '',
+    });
+
+    setTimeout(() => {
+      this.ccpFormGroup.patchValue({
+        creditCardNumber: '',
+      });
+    }, 100);
+
+    this.ccpFormGroup.markAsPristine();
+    this.ccpFormGroup.markAsUntouched();
+
     this.readonlyAfterSave = '';
     this.isSavedSuccessfully = false;
     this.validMessage = '';
@@ -155,7 +360,6 @@ export class CcpAddOneComponent implements OnInit {
   }
 
   public ccpDefault: Ccp = {
-    id: uuidv4(),
     creditCardNumber: '1234123412341234',
     cardHolder: 'Demo name',
     expirationDate: '09/22/2025',
@@ -167,7 +371,7 @@ export class CcpAddOneComponent implements OnInit {
 
   onFillForm() {
     this.ccpFormGroup.patchValue({
-      id: this.ccpDefault.id,
+      id: uuidv4(),
       creditCardNumber: this.ccpDefault.creditCardNumber,
       cardHolder: this.ccpDefault.cardHolder,
       expirationDate: this.ccpDefault.expirationDate,
@@ -329,7 +533,6 @@ export class CcpAddOneComponent implements OnInit {
     this.router.onSameUrlNavigation = 'reload';
     this.router.navigate([this.router.url]);
   }
-
 
   goToLastSavedItemView() {
     this.getUpdatedIndexFromDatabase();

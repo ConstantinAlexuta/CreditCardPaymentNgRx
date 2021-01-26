@@ -1,105 +1,190 @@
 <div class="container py-4 my-4">
 
-    <!-- <br> ccpFormGroup.value.creditCardNumber >>>> {{ccpFormGroup.value.creditCardNumber | json }} -->
-    <br> ccpFormGroup.valid >>>> {{ccpFormGroup.valid }}
-    <!-- <br> ccpSavedFromForm >>>> {{ccpSavedFromForm | json}}
-    <br> isSavedSuccessfully >>>> {{isSavedSuccessfully}}
-    <br> ccpSavedFromDBIndex >>>> {{ccpSavedFromDBIndex}}
-    <br> ccpSavedFromFormId >>>> {{ccpSavedFromFormId}}
-    <br> ccpsLengthFromDB >>>> {{ccpsLengthFromDB}}
-     -->
-    <!-- <br> clikOnSaveWithValidFormCount >>>> {{clikOnSaveWithValidFormCount}} -->
-    
-    
-
     <h3 class="mt-0 mb-4">Add a new {{itemNameDisplayed}} item</h3>
 
-    <!-- #formDir="ngForm" -->
-    <form [formGroup]="ccpFormGroup"  (ngSubmit)="!isSavedSuccessfully && onSubmit(ccpFormGroup)" novalidate>
-
-        <!-- [hidden]="formDir.submitted" -->
-        <div>
-
-            <div class="form-group">
-                <label for="creditCardNumber">Credit Card Number</label>
-                <label for="creditCardNumber" style="color: red">&nbsp;*&nbsp;</label>
-                <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.value.creditCardNumber.invalid 
-                                 && (ccpFormGroup.value.creditCardNumber.dirty 
-                                    || ccpFormGroup.value.creditCardNumber.touched)" class="alert alert-danger">
-                    <label for="creditCardNumber" *ngIf="ccpFormGroup.value.creditCardNumber.errors.required">
-                        This data is required.
-                    </label>
-                </label> -->
-                <!-- <label for="creditCardNumber" *ngIf="!ccpFormGroup.creditCardNumber.dirty">
-                    ccpFormGroup.value.creditCardNumber.invalid
-                </label> -->
-                <label>
-                    <!-- {{ccpFormGroup.value | json}} -->
-                </label>
-                <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.valid">
-                    ccpFormGroup.valid
-                </label>
-                <label for="creditCardNumber" *ngIf="!ccpFormGroup.valid">
-                    !ccpFormGroup.valid
-                </label> -->
-                <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.valid" style="color: red">&nbsp;TESTE</label> -->
-                <!-- <label for="creditCardNumber" *ngIf="!ccpFormGroup.valid" style="color: red">&nbsp;TESTE</label> -->
-                <span *ngIf="true" class="small" style="color: red">
-                    <span *ngIf="ccpFormGroup.value.creditCardNumber.length != fixedlength_creditCardNumber">
-                        &nbsp; Length must be of exactly {{fixedlength_creditCardNumber}} digits length.
-                    </span>
-                    <span *ngIf="ccpFormGroup.value.creditCardNumber.replace(' ', '').length 
-                                != ccpFormGroup.value.creditCardNumber.length">
-                        &nbsp; Spaces are not accepted.
-                    </span>
-                    <span *ngIf="!isNumber(ccpFormGroup.value.creditCardNumber.trim())">
-                        &nbsp; Only digits are a valid input.
-                    </span>
-                </span>
-                <input id="creditCardNumber"  formControlName="creditCardNumber" 
-                    class="form-control form-control-sm" 
-                    minlength="{{fixedlength_creditCardNumber}}"
-                    maxlength="{{fixedlength_creditCardNumber}}"
-                    readonly="{{readonlyAfterSave}}" required autofocus />
-                <!-- <div *ngIf="creditCardNumber.invalid && (creditCardNumber.dirty || creditCardNumber.touched)" class="alert alert-danger"></div> -->
-            </div>
+    <form [formGroup]="ccpFormGroup" (ngSubmit)="!isSavedSuccessfully && onSubmit(ccpFormGroup)" novalidate>
 
         <div class="form-group">
-            <label>Card Holder</label>
-            <label style="color: red">&nbsp;*&nbsp;</label>
-            <span *ngIf="true" class="small"  style="color: red">
-                <span *ngIf="ccpFormGroup.value.cardHolder.trim().length < minlength_cardHolder
-                             || ccpFormGroup.value.cardHolder.trim().length >= maxlength_cardHolder">
-                    Length must be bewteen {{minlength_cardHolder}} and {{maxlength_cardHolder}}.
+
+            <label for="creditCardNumber">Credit Card Number</label>
+            
+            <label *ngIf="ccpFormGroup.controls['creditCardNumber'].invalid" style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['creditCardNumber'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
+
+            <span *ngIf="ccpFormGroup.controls['creditCardNumber'].dirty" >
+        
+                <span>
+            
+                    <span *ngIf="ccpFormGroup.controls['creditCardNumber'].hasError('spacesArePresent')" class="alert alert-danger small  p-1" align="center">
+                        Spaces are not accepted.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['creditCardNumber'].hasError('areNotOnlyDigits')" class="alert alert-danger small  p-1" align="center">
+                        Only digits are a valid input.
+                    </span>
+                                            
                 </span>
-                <span *ngIf="ccpFormGroup.value.cardHolder.length != ccpFormGroup.value.cardHolder.trim().length">
-                    &nbsp; Spaces are not accepted at margins.
+            
+                <span *ngIf="ccpFormGroup.controls['creditCardNumber'].touched">
+            
+                    <span *ngIf="ccpFormGroup.controls['creditCardNumber'].errors?.minlength
+                            || ccpFormGroup.controls['creditCardNumber'].errors?.maxlength" class="alert alert-danger small  p-1" align="center">
+                        Length must be of exactly {{fixedlength_creditCardNumber}} digits.
+                    </span>
+            
                 </span>
+            
             </span>
-            <input type="text" class="form-control form-control-sm" 
-            id="cardHolder"
-            formControlName="cardHolder" 
-            readonly="{{readonlyAfterSave}}" 
-            minlength="{{minlength_cardHolder}}"
-            maxlength="{{maxlength_cardHolder}}"
-             
-            required        
-            placeholder=""        
-            autofocus />
+
+            <span *ngIf="ccpFormGroup.controls['creditCardNumber'].touched">
+            
+                <span *ngIf="ccpFormGroup.controls['creditCardNumber'].errors?.required" class="alert alert-danger small  p-1" align="center">
+                    Credit Card Number is required.
+                </span>
+            
+            </span>
+            
+            <input type="text" 
+                id="creditCardNumber"  
+                formControlName="creditCardNumber" 
+                class="form-control form-control-sm" 
+                minlength="{{fixedlength_creditCardNumber}}"
+                maxlength="{{fixedlength_creditCardNumber}}"
+                readonly="{{readonlyAfterSave}}" 
+                required 
+                autofocus />
+
         </div>
+
+
+        <div class="form-group">
+
+            <label>Card Holder</label>
+            
+            <label *ngIf="ccpFormGroup.controls['cardHolder'].invalid" style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['cardHolder'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
+
+            <span *ngIf="ccpFormGroup.controls['cardHolder'].dirty" >
+            
+                <span>
+            
+                    <span *ngIf="ccpFormGroup.controls['cardHolder'].hasError('spacesArePresentAtMargins')" class="alert alert-danger small  p-1" align="center">
+                        Spaces are not accepted at margins.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['cardHolder'].hasError('anExpectedStringNameStartWithDigit')" class="alert alert-danger small  p-1" align="center">
+                        Holder name cannot start with a digit.
+                    </span>
+                                            
+                </span>
+            
+                <span *ngIf="ccpFormGroup.controls['cardHolder'].touched">
+            
+                    <span *ngIf="ccpFormGroup.controls['cardHolder'].errors?.minlength
+                            || ccpFormGroup.controls['cardHolder'].errors?.maxlength" class="alert alert-danger small  p-1" align="center">
+                        Length must be bewteen {{minlength_cardHolder}} and {{maxlength_cardHolder}}.
+                    </span>
+            
+                </span>
+            
+            </span>
+
+            <span *ngIf="ccpFormGroup.controls['cardHolder'].touched">
+            
+                <span *ngIf="ccpFormGroup.controls['cardHolder'].errors?.required" class="alert alert-danger small  p-1"
+                    align="center">
+                    Card Holder is required.
+                </span>
+            
+            </span>
+            
+            <input type="text" 
+                class="form-control form-control-sm" 
+                id="cardHolder"
+                formControlName="cardHolder" 
+                readonly="{{readonlyAfterSave}}" 
+                minlength="{{minlength_cardHolder}}"
+                maxlength="{{maxlength_cardHolder}}"
+                required        
+                placeholder=""        
+                autofocus />
+        </div>
+
 
         <div class="form-group">
             <label>Expiration Date</label>
-            <label style="color: red">&nbsp;*</label>
-            <input type="text" class="form-control form-control-sm" 
-            id="expirationDate"
-            formControlName="expirationDate" 
-            readonly="{{readonlyAfterSave}}" 
-            minlength="{{minlength_expirationDate}}"
-            maxlength="{{maxlength_expirationDate}}"
-            required        
-            placeholder=""        
-            autofocus />
+            
+            <label *ngIf="ccpFormGroup.controls['expirationDate'].invalid" style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['expirationDate'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
+
+            <span *ngIf="ccpFormGroup.controls['expirationDate'].dirty">
+            
+                <span>
+            
+                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('spacesArePresent')" 
+                        class="alert alert-danger small  p-1" align="center">
+                        Spaces are not accepted.
+                    </span>
+            
+                                
+                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateIsNotValidInMMDDYYYY')" 
+                        class="alert alert-danger small  p-1" align="center">
+                        Date has not a valid format (mm/dd/yyyy) or doesn't exist.
+                    </span>
+
+                    <span
+                        *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateIsValidButInThePastMMDDYYYY')" 
+                        class="alert alert-danger small  p-1" align="center">
+                        Date cannot be in the past.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('yearIsNotInPresentOrFuture100ValidInDateMMDDYYYY')" 
+                        class="alert alert-danger small  p-1" align="center">
+                        Year must be bewteen {{currentYear}} and {{currentYear + 100}}.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('monthIsNotInPresentOrFutureInCurrentYearInDateMMDDYYYY')"
+                        class="alert alert-danger small  p-1" align="center">
+                        Month must be greater or equal with curent year month.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dayIsNotInPresentOrFutureInCurrentMonthAndYearInDateMMDDYYYY')"
+                        class="alert alert-danger small  p-1" align="center">
+                        Day must be greater or equal with the curent day.
+                    </span>
+
+                </span>
+            
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].touched">
+            
+                    <span *ngIf="ccpFormGroup.controls['expirationDate'].errors?.minlength
+                                        || ccpFormGroup.controls['expirationDate'].errors?.maxlength"
+                        class="alert alert-danger small  p-1" align="center">
+                        Length must be of exactly {{fixedlength_expirationDate}} digits.
+                    </span>
+            
+                </span>
+            
+            </span>
+            
+            <span *ngIf="ccpFormGroup.controls['expirationDate'].touched">
+            
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].errors?.required" class="alert alert-danger small  p-1" align="center">
+                    Expiration Date is required.
+                </span>
+            
+            </span>
+
+            <input type="text" 
+                class="form-control form-control-sm" 
+                id="expirationDate"
+                formControlName="expirationDate" 
+                readonly="{{readonlyAfterSave}}" 
+                minlength="{{fixedlength_expirationDate}}"
+                maxlength="{{fixedlength_expirationDate}}"
+                required        
+                placeholder=""        
+                autofocus />
         </div>
 
 
@@ -107,7 +192,8 @@
 
             <label>Amount</label>
 
-            <label style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['amount'].invalid" style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['amount'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
 
             <span *ngIf="ccpFormGroup.controls['amount'].dirty" >
             
@@ -138,7 +224,7 @@
                 <span *ngIf="ccpFormGroup.controls['amount'].touched">
             
                     <span *ngIf="ccpFormGroup.controls['amount'].errors?.minlength
-                              || ccpFormGroup.controls['amount'].errors?.maxlength" class="alert alert-danger small  p-1" align="center">
+                            || ccpFormGroup.controls['amount'].errors?.maxlength" class="alert alert-danger small  p-1" align="center">
                         Length must be bewteen {{minlength_amount}} and {{maxlength_amount}}.
                     </span>
             
@@ -154,43 +240,46 @@
             
             </span>
 
-            <input type="text" class="form-control form-control-sm" 
-            id="amount"
-            formControlName="amount" 
-            readonly="{{readonlyAfterSave}}" 
-            minlength="{{minlength_amount}}"
-            maxlength="{{maxlength_amount}}"
-            required        
-            placeholder=""        
-            autofocus />
+            <input type="text" 
+                class="form-control form-control-sm" 
+                id="amount"
+                formControlName="amount" 
+                readonly="{{readonlyAfterSave}}" 
+                minlength="{{minlength_amount}}"
+                maxlength="{{maxlength_amount}}"
+                required        
+                placeholder=""        
+                autofocus />
 
         </div>
-        
+    
 
         <div class="form-group">
             
             <label>Security Code (CCV)</label>
 
-            <label style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['securityCodeCCV'].invalid" style="color: red">&nbsp;*&nbsp;</label>
+            <label *ngIf="ccpFormGroup.controls['securityCodeCCV'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
 
             <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].dirty" >
             
                 <span>
             
                     <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].hasError('spacesArePresent')" class="alert alert-danger small  p-1" align="center">
-                        &nbsp; Spaces are not accepted.
+                        Spaces are not accepted.
                     </span>
             
                     <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].hasError('areNotOnlyDigits')" class="alert alert-danger small  p-1" align="center">
-                        &nbsp; Only digits are a valid input.
+                        Only digits are a valid input.
                     </span>
             
                 </span>
             
                 <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].touched">
             
-                    <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].errors?.minlength" class="alert alert-danger small  p-1" align="center">
-                        &nbsp; Length must be of exactly {{fixedlength_securityCodeCCV}} digits.
+                    <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].errors?.minlength 
+                            || ccpFormGroup.controls['securityCodeCCV'].errors?.maxlength" class="alert alert-danger small  p-1" align="center">
+                        Length must be of exactly {{fixedlength_securityCodeCCV}} digits.
                     </span>
             
                 </span>
@@ -205,7 +294,8 @@
             
             </span>
 
-            <input type="text" class="form-control form-control-sm" 
+            <input type="text" 
+                class="form-control form-control-sm" 
                 id="securityCodeCCV"
                 formControlName="securityCodeCCV" 
                 readonly="{{readonlyAfterSave}}" 
@@ -273,8 +363,6 @@
                 </button>
             
             </div>
-
-        </div>
 
         </div>
 
