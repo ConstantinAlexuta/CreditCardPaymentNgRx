@@ -1,13 +1,14 @@
 <div class="container py-4 my-4">
 
     <!-- <br> ccpFormGroup.value.creditCardNumber >>>> {{ccpFormGroup.value.creditCardNumber | json }} -->
-    <!-- <br> ccpFormGroup.valid >>>> {{ccpFormGroup.valid }} -->
+    <br> ccpFormGroup.valid >>>> {{ccpFormGroup.valid }}
     <!-- <br> ccpSavedFromForm >>>> {{ccpSavedFromForm | json}}
     <br> isSavedSuccessfully >>>> {{isSavedSuccessfully}}
     <br> ccpSavedFromDBIndex >>>> {{ccpSavedFromDBIndex}}
     <br> ccpSavedFromFormId >>>> {{ccpSavedFromFormId}}
     <br> ccpsLengthFromDB >>>> {{ccpsLengthFromDB}}
      -->
+    <!-- <br> clikOnSaveWithValidFormCount >>>> {{clikOnSaveWithValidFormCount}} -->
     
     
 
@@ -21,7 +22,7 @@
 
             <div class="form-group">
                 <label for="creditCardNumber">Credit Card Number</label>
-                <label for="creditCardNumber" style="color: red">&nbsp;*</label>
+                <label for="creditCardNumber" style="color: red">&nbsp;*&nbsp;</label>
                 <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.value.creditCardNumber.invalid 
                                  && (ccpFormGroup.value.creditCardNumber.dirty 
                                     || ccpFormGroup.value.creditCardNumber.touched)" class="alert alert-danger">
@@ -43,20 +44,45 @@
                 </label> -->
                 <!-- <label for="creditCardNumber" *ngIf="ccpFormGroup.valid" style="color: red">&nbsp;TESTE</label> -->
                 <!-- <label for="creditCardNumber" *ngIf="!ccpFormGroup.valid" style="color: red">&nbsp;TESTE</label> -->
+                <span *ngIf="true" class="small" style="color: red">
+                    <span *ngIf="ccpFormGroup.value.creditCardNumber.length != fixedlength_creditCardNumber">
+                        &nbsp; Length must be of exactly {{fixedlength_creditCardNumber}} digits length.
+                    </span>
+                    <span *ngIf="ccpFormGroup.value.creditCardNumber.replace(' ', '').length 
+                                != ccpFormGroup.value.creditCardNumber.length">
+                        &nbsp; Spaces are not accepted.
+                    </span>
+                    <span *ngIf="!isNumber(ccpFormGroup.value.creditCardNumber.trim())">
+                        &nbsp; Only digits are a valid input.
+                    </span>
+                </span>
                 <input id="creditCardNumber"  formControlName="creditCardNumber" 
                     class="form-control form-control-sm" 
-                    maxlength="16"
+                    minlength="{{fixedlength_creditCardNumber}}"
+                    maxlength="{{fixedlength_creditCardNumber}}"
                     readonly="{{readonlyAfterSave}}" required autofocus />
                 <!-- <div *ngIf="creditCardNumber.invalid && (creditCardNumber.dirty || creditCardNumber.touched)" class="alert alert-danger"></div> -->
             </div>
 
         <div class="form-group">
             <label>Card Holder</label>
-            <label style="color: red">&nbsp;*</label>
+            <label style="color: red">&nbsp;*&nbsp;</label>
+            <span *ngIf="true" class="small"  style="color: red">
+                <span *ngIf="ccpFormGroup.value.cardHolder.trim().length < minlength_cardHolder
+                             || ccpFormGroup.value.cardHolder.trim().length >= maxlength_cardHolder">
+                    Length must be bewteen {{minlength_cardHolder}} and {{maxlength_cardHolder}}.
+                </span>
+                <span *ngIf="ccpFormGroup.value.cardHolder.length != ccpFormGroup.value.cardHolder.trim().length">
+                    &nbsp; Spaces are not accepted at margins.
+                </span>
+            </span>
             <input type="text" class="form-control form-control-sm" 
             id="cardHolder"
             formControlName="cardHolder" 
             readonly="{{readonlyAfterSave}}" 
+            minlength="{{minlength_cardHolder}}"
+            maxlength="{{maxlength_cardHolder}}"
+             
             required        
             placeholder=""        
             autofocus />
@@ -69,63 +95,130 @@
             id="expirationDate"
             formControlName="expirationDate" 
             readonly="{{readonlyAfterSave}}" 
+            minlength="{{minlength_expirationDate}}"
+            maxlength="{{maxlength_expirationDate}}"
             required        
             placeholder=""        
             autofocus />
         </div>
 
+
         <div class="form-group">
+
             <label>Amount</label>
-            <label style="color: red">&nbsp;*</label>
+
+            <label style="color: red">&nbsp;*&nbsp;</label>
+
+            <span *ngIf="ccpFormGroup.controls['amount'].dirty" >
+            
+                <span>
+            
+                    <span *ngIf="ccpFormGroup.controls['amount'].hasError('spacesArePresent')" class="alert alert-danger small  p-1" align="center">
+                        Spaces are not accepted.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['amount'].hasError('dotIsFirstCharacterAfterTrim')" class="alert alert-danger small  p-1" align="center">
+                        Cannot start with dot, use zero dot instead.
+                    </span>
+            
+                    <span *ngIf="ccpFormGroup.controls['amount'].hasError('isNotNumber')" class="alert alert-danger small  p-1" align="center">
+                        It's not a valid number format.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['amount'].hasError('commaIsPresent')" class="alert alert-danger small  p-1" align="center">
+                        Comma is not accepted, use dot instead.
+                    </span>
+
+                    <span *ngIf="ccpFormGroup.controls['amount'].hasError('moreThanTwoDecimals')" class="alert alert-danger small  p-1" align="center">
+                        Only two decimals are accepted.
+                    </span>
+                    
+                </span>
+            
+                <span *ngIf="ccpFormGroup.controls['amount'].touched">
+            
+                    <span *ngIf="ccpFormGroup.controls['amount'].errors?.minlength
+                              || ccpFormGroup.controls['amount'].errors?.maxlength" class="alert alert-danger small  p-1" align="center">
+                        Length must be bewteen {{minlength_amount}} and {{maxlength_amount}}.
+                    </span>
+            
+                </span>
+            
+            </span>
+            
+            <span *ngIf="ccpFormGroup.controls['amount'].touched" >
+            
+                <span *ngIf="ccpFormGroup.controls['amount'].errors?.required" class="alert alert-danger small  p-1" align="center">
+                    Amount is required. 
+                </span>
+            
+            </span>
+
             <input type="text" class="form-control form-control-sm" 
             id="amount"
             formControlName="amount" 
             readonly="{{readonlyAfterSave}}" 
+            minlength="{{minlength_amount}}"
+            maxlength="{{maxlength_amount}}"
             required        
             placeholder=""        
             autofocus />
+
         </div>
+        
 
         <div class="form-group">
+            
             <label>Security Code (CCV)</label>
-            <label style="color: red">&nbsp;*</label>
+
+            <label style="color: red">&nbsp;*&nbsp;</label>
+
+            <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].dirty" >
+            
+                <span>
+            
+                    <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].hasError('spacesArePresent')" class="alert alert-danger small  p-1" align="center">
+                        &nbsp; Spaces are not accepted.
+                    </span>
+            
+                    <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].hasError('areNotOnlyDigits')" class="alert alert-danger small  p-1" align="center">
+                        &nbsp; Only digits are a valid input.
+                    </span>
+            
+                </span>
+            
+                <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].touched">
+            
+                    <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].errors?.minlength" class="alert alert-danger small  p-1" align="center">
+                        &nbsp; Length must be of exactly {{fixedlength_securityCodeCCV}} digits.
+                    </span>
+            
+                </span>
+            
+            </span>
+            
+            <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].touched" >
+            
+                <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].errors?.required" class="alert alert-danger small  p-1" align="center">
+                    Security Code (CCV) is required.
+                </span>
+            
+            </span>
+
             <input type="text" class="form-control form-control-sm" 
-            id="securityCodeCCV"
-            formControlName="securityCodeCCV" 
-            readonly="{{readonlyAfterSave}}" 
-            required        
-            placeholder=""        
-            autofocus />
+                id="securityCodeCCV"
+                formControlName="securityCodeCCV" 
+                readonly="{{readonlyAfterSave}}" 
+                minlength="{{fixedlength_securityCodeCCV}}"
+                maxlength="{{fixedlength_securityCodeCCV}}"
+                required        
+                placeholder=""        
+                autofocus />
         </div>
 
-        <!-- <div class="form-group">
-            <label>Description</label>
-            <label style="color: red">&nbsp;*</label>
-            <input type="text" class="form-control form-control-sm" formControlName="description" 
-            readonly="{{readonlyAfterSave}}" 
-            required
-            placeholder=""      
-             />
-        </div> -->
 
-        <!-- <div class="form-group">
-            <label>Status</label>
-            <label style="color: red">&nbsp;*</label>
-
-            <select 
-                class="form-control form-select form-select-sm" 
-                formControlName="status"
-                aria-label="Default select example"
-                required 
-                placeholder=""
-                >
-                ////////////////////////////
-                <option selected>NEW</option>
-                <option *ngFor="let status of statuses; let i = index" value="{{status.value}}">{{status.value}}</option>               
-            </select>
-        </div> -->
-
-        <button type="submit" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2">
+        <button type="submit" class="btn btn-outline-secondary px-4 mx-4 py-2 my-2"
+            (click)="onSave()">
             Save item
         </button>
 
@@ -141,27 +234,27 @@
 
         <div class="mt-3">
 
-            <div *ngIf="showMessageAlreadySubmitted">
-                <h6 style="color: blue">{{messageAlreadySubmitted}}</h6>
-            </div>
-            
-            <div *ngIf="showFailureMessageOnSaving">
-                <h6 style="color: red;">{{messageFailureForFirstAttemptToSave}}</h6>
-            </div>
-            
-            
-            <div>
-                <p class="has-info">
-                    <span *ngIf="validMessage != ''">
-                        {{validMessage}}
-                    </span>
-                    <span *ngIf="showNewItemCreatedIndexMessage" style="color:blue">
-                        {{newItemCreatedIndexMessage}}
-                    </span>
-                </p>
-            </div>
+            <span class="has-info mb-3">
 
-            <div *ngIf="isSavedSuccessfully">
+                <span *ngIf="showMessageAlreadySubmitted">
+                    <span style="color: darkgreen">{{messageAlreadySubmitted}}</span>
+                </span>
+                
+                <span *ngIf="showFailureMessageOnSaving">
+                    <h6 style="color: red;">{{messageFailureForFirstAttemptToSave}}</h6>
+                </span>
+
+                <span *ngIf="validMessage != ''">
+                    {{validMessage}}
+                </span>
+
+                <span *ngIf="showNewItemCreatedIndexMessage" style="color:blue">
+                    {{newItemCreatedIndexMessage}}
+                </span>
+
+            </span>
+
+            <div *ngIf="isSavedSuccessfully" class="mt-3">
             
                 <button class="btn btn-outline-secondary px-4 mx-4 py-2 my-2" (click)="reloadComponent()">
                     Create new
@@ -183,13 +276,7 @@
 
         </div>
 
-        
-
         </div>
-
-        <!-- <div [hidden]="!formDir.submitted">
-            Item was saved.
-        </div> -->
 
     </form>
 
