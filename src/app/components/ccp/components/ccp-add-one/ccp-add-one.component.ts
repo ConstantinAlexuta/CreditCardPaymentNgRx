@@ -330,6 +330,7 @@ export class CcpAddOneComponent implements OnInit {
     this.router.navigate([this.router.url]);
   }
 
+
   goToLastSavedItemView() {
     this.getUpdatedIndexFromDatabase();
 
