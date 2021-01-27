@@ -324,6 +324,7 @@ export class CcpAddOneComponent implements OnInit {
 
   readonlyAfterSave = '';
 
+
   reloadComponent() {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
