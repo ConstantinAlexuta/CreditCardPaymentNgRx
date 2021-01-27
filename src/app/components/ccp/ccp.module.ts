@@ -19,6 +19,8 @@ import { CcpEffects } from './state/ccp.effects';
 import { ccpReducer } from './state/ccp.reducers';
 import { CcpService } from './service/ccp.service';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 @NgModule({
   declarations: [
     CcpViewAllComponent,
@@ -34,6 +36,8 @@ import { CcpService } from './service/ccp.service';
   imports: [
     CommonModule,
     CcpRoutingModule,
+
+    NgbModule,
 
     ReactiveFormsModule,
     FormsModule,

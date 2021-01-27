@@ -11,6 +11,22 @@ import { createCcp } from '../../state/ccp.actions';
 import { Observable } from 'rxjs';
 import { getCcps } from '../../state/ccp.selectors';
 
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+
+import { noSpacesValidator } from 'src/app/shared/form-control-validators/string-validators/no-spaces-validator';
+import { noSpacesAtMarginsValidator } from 'src/app/shared/form-control-validators/string-validators/no-spaces-at-margins-validator';
+import { cannotStartWithDotValidator } from 'src/app/shared/form-control-validators/string-validators/cannot-start-with-dot-validator';
+import { noCommaValidator } from 'src/app/shared/form-control-validators/string-validators/no-comma-validator';
+import { onlyDigitsValidator } from 'src/app/shared/form-control-validators/string-validators/only-digits-validator';
+import { onlyNumberValidator } from 'src/app/shared/form-control-validators/string-validators/only-number-validator';
+import { onlyTwoDecimalsValidator } from 'src/app/shared/form-control-validators/string-validators/only-two-decimals-validator';
+import { startWithCharacterValidator } from 'src/app/shared/form-control-validators/string-validators/start-with-character-validator';
+import { onlyPositiveNonNullNumberValidator } from 'src/app/shared/form-control-validators/string-validators/only-positive-non-null-number-validator';
+
+import { inDateFormatYYYYdashMMdashDDYearMustContainOnlyDigits } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-year-must-contain-only-digits';
+import { inDateFormatYYYYdashMMdashDDYearMustBeGreaterOrEqualWithCurrentYearAndLessThanPlus100Years } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-year-must-be-greater-or-equal-with-current-year-and-less-than-plus-100-years';
+import { inDateFormatYYYYdashMMdashDDAfterYearMustBeADash } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-after-year-must-be-a-dash';
+
 @Component({
   selector: 'app-ccp-add-one',
   templateUrl: './ccp-add-one.component.html',
@@ -49,282 +65,62 @@ export class CcpAddOneComponent implements OnInit {
         Validators.required,
         Validators.minLength(this.fixedlength_creditCardNumber),
         Validators.maxLength(this.fixedlength_creditCardNumber),
-        this.noSpacesValidator,
-        this.onlyDigitsValidator,
+        noSpacesValidator,
+        onlyDigitsValidator,
       ]),
       cardHolder: new FormControl('', [
         Validators.required,
         Validators.minLength(this.minlength_cardHolder),
         Validators.maxLength(this.maxlength_cardHolder),
-        this.noSpacesAtMarginsValidator,
-        this.startWithCharacterValidator,
+        noSpacesAtMarginsValidator,
+        startWithCharacterValidator,
       ]),
       expirationDate: new FormControl('', [
         Validators.required,
         Validators.minLength(this.fixedlength_expirationDate),
         Validators.maxLength(this.fixedlength_expirationDate),
-        this.isValidDateMMDDYYYYValidator,
-        this.isValidDateAndNotInThePastMMDDYYYYValidator,
-        this.isValidPresentOrFuture100YearInDateMMDDYYYYValidator,
-        this.isValidPresentOrFutureMonthInDateMMDDYYYYValidator,
-        this.isValidPresentOrFutureDayInDateMMDDYYYYValidator,
+
+        inDateFormatYYYYdashMMdashDDYearMustContainOnlyDigits,
+        inDateFormatYYYYdashMMdashDDYearMustBeGreaterOrEqualWithCurrentYearAndLessThanPlus100Years,
+        inDateFormatYYYYdashMMdashDDAfterYearMustBeADash,
+
+        // multipleCustomVerificationsForDateFormatYYYdMMdDDValidator,
+
+        // isValidDateYearFormatYYYdMMdDDValidator,
+        // isValidDateFormatYYYdMMdDDValidator,
+
+        // isValidDateAndNotInThePastYYYdMMdDDValidator,
+        // isValidPresentOrFuture100YearInDateYYYdMMdDDValidator,
+        // isValidPresentOrFutureMonthInDateYYYdMMdDDValidator,
+        // isValidPresentOrFutureDayInDateYYYdMMdDDValidator,
       ]),
       amount: new FormControl('', [
         Validators.required,
         Validators.minLength(this.minlength_amount),
         Validators.maxLength(this.maxlength_amount),
-        this.noSpacesValidator,
-        this.noCommaValidator,
-        this.onlyNumberValidator,
-        this.cannotStartWithDotValidator,
-        this.onlyTwoDecimalsValidator,
+        noSpacesValidator,
+        noCommaValidator,
+        onlyNumberValidator,
+        onlyPositiveNonNullNumberValidator,
+        cannotStartWithDotValidator,
+        onlyTwoDecimalsValidator,
       ]),
       securityCodeCCV: new FormControl('', [
-        Validators.required,
+        // Validators.required,  // is optional in REQUIREMENTS, for demo // in production should be enabled
         Validators.minLength(this.fixedlength_securityCodeCCV),
         Validators.maxLength(this.fixedlength_securityCodeCCV),
-        this.noSpacesValidator,
-        this.onlyDigitsValidator,
+        // noSpacesValidator,   // is optional in REQUIREMENTS, for demo // in production should be enabled
+        // onlyDigitsValidator, // is optional in REQUIREMENTS, for demo // in production should be enabled
       ]),
     });
   }
 
-  noSpacesValidator(control: FormControl) {
-    return control.value.replace(' ', '').length == control.value.length
-      ? null
-      : { spacesArePresent: true };
-  }
-
-  noSpacesAtMarginsValidator(control: FormControl) {
-    return control.value.trim().length == control.value.length
-      ? null
-      : { spacesArePresentAtMargins: true };
-  }
-
-  onlyNumberValidator(control: FormControl) {
-    let isNumber =
-      control.value != null &&
-      control.value !== '' &&
-      !isNaN(Number(control.value.toString()));
-
-    return isNumber ? null : { isNotNumber: true };
-  }
-
-  onlyDigitsValidator(control: FormControl) {
-    let isNumber =
-      control.value != null &&
-      control.value !== '' &&
-      !isNaN(Number(control.value.toString()));
-
-    let noDotOrComma =
-      control.value.replace('.', '').replace(',', '').length ==
-      control.value.length;
-
-    return isNumber && noDotOrComma ? null : { areNotOnlyDigits: true };
-  }
-
-  startWithCharacterValidator(control: FormControl) {
-    let firstChar = control.value.charAt(0);
-    let firstCharIsDigit =
-      firstChar != null &&
-      firstChar !== '' &&
-      firstChar !== ' ' &&
-      !isNaN(Number((firstChar + '').toString()));
-
-    return !firstCharIsDigit
-      ? null
-      : { anExpectedStringNameStartWithDigit: true };
-  }
-
-  noCommaValidator(control: FormControl) {
-    let noComma = control.value.replace(',', '').length == control.value.length;
-
-    return noComma ? null : { commaIsPresent: true };
-  }
-
-  cannotStartWithDotValidator(control: FormControl) {
-    let afterTrimStartWithDot = control.value.charAt(0) == '.';
-
-    return !afterTrimStartWithDot
-      ? null
-      : { dotIsFirstCharacterAfterTrim: true };
-  }
-
-  onlyTwoDecimalsValidator(control: FormControl) {
-    let numberOfDecimals = 0;
-
-    let haveDot = control.value.replace('.', '').length != control.value.length;
-
-    let indexOfDot = (control.value + '').indexOf('.', 0);
-
-    if (indexOfDot > 0) {
-      numberOfDecimals = control.value.length - indexOfDot - 1;
-    }
-
-    return !(haveDot && indexOfDot >= 1 && numberOfDecimals > 2)
-      ? null
-      : { moreThanTwoDecimals: true };
-  }
-
-  isValidDateMMDDYYYYValidator(control: FormControl) {
-    let dateString = control.value;
-
-    // First check for the pattern
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    // Parse the date parts to integers
-    var parts = dateString.split('/');
-    var day = parseInt(parts[1], 10);
-    var month = parseInt(parts[0], 10);
-    var year = parseInt(parts[2], 10);
-
-    // Check the ranges of month and year
-    if (year < 1000 || year > 3000 || month == 0 || month > 12) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    // Adjust for leap years
-    if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
-      monthLength[1] = 29;
-    }
-
-    // Check the range of the day
-    return day > 0 && day <= monthLength[month - 1]
-      ? null
-      : { dateIsNotValidInMMDDYYYY: true };
-  }
-
-  isValidDateAndNotInThePastMMDDYYYYValidator(control: FormControl) {
-    let dateString = control.value;
-
-    let currentDate: any = new Date();
-    let currentYear = +currentDate.getFullYear();
-    let currentMonth = +currentDate.getMonth() + 1;
-    let currentDay = +currentDate.getDate();
-
-    // First check for the pattern
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    // Parse the date parts to integers
-    var parts = dateString.split('/');
-    var day = parseInt(parts[1], 10);
-    var month = parseInt(parts[0], 10);
-    var year = parseInt(parts[2], 10);
-
-    // Check the ranges of month and year
-    if (year < 1000 || year > 3000 || month == 0 || month > 12) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    var monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    // Adjust for leap years
-    if (year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)) {
-      monthLength[1] = 29;
-    }
-
-    // Check the range of the day
-    let isValidDay = day > 0 && day <= monthLength[month - 1];
-
-    let isPresentOrFutureYear =
-      year >= currentYear && year <= currentYear + 100;
-
-    let isPresentOrFutureMonth =
-      year > currentYear || (year == currentYear && month >= currentMonth);
-
-    let isPresentOrFutureDay =
-      year > currentYear ||
-      (year == currentYear && month > currentMonth) ||
-      (year == currentYear && month == currentMonth && day >= currentDay);
-
-    return isValidDay &&
-      isPresentOrFutureYear &&
-      isPresentOrFutureMonth &&
-      isPresentOrFutureDay
-      ? null
-      : {
-          dateIsValidButInThePastMMDDYYYY: true,
-        };
-  }
+  expirationDate!: NgbDateStruct;
 
   currentDate: any = new Date();
   currentYear = +this.currentDate.getFullYear();
   currentMonth = +this.currentDate.getMonth() + 1;
   currentDay = +this.currentDate.getDate();
-
-  isValidPresentOrFuture100YearInDateMMDDYYYYValidator(control: FormControl) {
-    let dateString = control.value;
-
-    let currentDate: any = new Date();
-    let currentYear = +currentDate.getFullYear();
-
-    // First check for the pattern
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    // Parse the date parts to integers
-    var parts = dateString.split('/');
-    var year = parseInt(parts[2], 10);
-
-    // Check the ranges year
-
-    return year >= currentYear && year <= currentYear + 100
-      ? null
-      : { yearIsNotInPresentOrFuture100ValidInDateMMDDYYYY: true };
-  }
-
-  isValidPresentOrFutureMonthInDateMMDDYYYYValidator(control: FormControl) {
-    let dateString = control.value;
-
-    let currentDate: any = new Date();
-    let currentYear = +currentDate.getFullYear();
-    let currentMonth = +currentDate.getMonth() + 1;
-
-    // First check for the pattern
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    // Parse the date parts to integers
-    var parts = dateString.split('/');
-    var month = parseInt(parts[0], 10);
-    var year = parseInt(parts[2], 10);
-
-    return !(currentYear == year && month < currentMonth)
-      ? null
-      : { monthIsNotInPresentOrFutureInCurrentYearInDateMMDDYYYY: true };
-  }
-
-  isValidPresentOrFutureDayInDateMMDDYYYYValidator(control: FormControl) {
-    let dateString = control.value;
-
-    let currentDate: any = new Date();
-    let currentYear = +currentDate.getFullYear();
-    let currentMonth = +currentDate.getMonth() + 1;
-    let currentDay = +currentDate.getDate();
-
-    // First check for the pattern
-    if (!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      return { dateIsNotValidInMMDDYYYY: true };
-    }
-
-    // Parse the date parts to integers
-    var parts = dateString.split('/');
-    var day = parseInt(parts[1], 10);
-    var month = parseInt(parts[0], 10);
-    var year = parseInt(parts[2], 10);
-
-    return !(currentYear == year && currentMonth == month && day < currentDay)
-      ? null
-      : { dayIsNotInPresentOrFutureInCurrentMonthAndYearInDateMMDDYYYY: true };
-  }
 
   ngOnInit(): void {}
 
@@ -362,7 +158,7 @@ export class CcpAddOneComponent implements OnInit {
   public ccpDefault: Ccp = {
     creditCardNumber: '1234123412341234',
     cardHolder: 'Demo name',
-    expirationDate: '09/22/2025',
+    expirationDate: '2025-09-25',
     amount: '220.05',
     securityCodeCCV: '928',
   };
@@ -585,21 +381,49 @@ export class CcpAddOneComponent implements OnInit {
     'Failure on saving! The attempt to save the item on server was without success. Unknown cause! Please reload the page from browser and retry.';
 
   showFailureMessageOnSaving: boolean = false;
+
   enableToShowFailureMessageOnSaving() {
     if (
       this.firstAttemptToSaveWithValidFormWasDone &&
       !this.isSavedSuccessfully
     ) {
       this.showFailureMessageOnSaving = true;
+      this.enableToShowRefreshPageInCaseOfFailureAndHideOtherOptions();
     }
 
     setTimeout(() => {
-      this.showFailureMessageOnSaving = false;
-    }, 7000);
+      this.validMessage = '';
+    }, 5000);
+
+    setTimeout(() => {
+      this.messageFailureForFirstAttemptToSave = 'Refresh the page please.';
+    }, 10000);
+
+    setTimeout(() => {
+      let interval = 5;
+      setInterval(() => {
+        this.messageFailureForFirstAttemptToSave =
+          'Automatically refresh the page in ' + interval + ' seconds.';
+      }, 1000);
+    }, 15000);
+
+    setTimeout(() => {
+      this.reloadComponent();
+    }, 20000);
   }
 
   delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  showRefreshPageInCaseOfFailureAndHideOtherOptions: boolean = false;
+
+  enableToShowRefreshPageInCaseOfFailureAndHideOtherOptions() {
+    this.showRefreshPageInCaseOfFailureAndHideOtherOptions = true;
+  }
+
+  onRefreshTheEntirePage() {
+    this.reloadComponent();
   }
 
   isNumber(value: string | number): boolean {
