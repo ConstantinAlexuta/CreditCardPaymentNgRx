@@ -1,6 +1,6 @@
 <div class="container py-4 my-4">
 
-    <h3 class="mt-0 mb-4">Add a new {{itemNameDisplayed}} item</h3>
+    <h5 class="mt-0 mb-4">Add a new {{itemNameDisplayed}} item</h5>
 
     <form [formGroup]="ccpFormGroup" (ngSubmit)="!isSavedSuccessfully && onSubmit(ccpFormGroup)" novalidate>
 
@@ -119,74 +119,78 @@
             <label *ngIf="ccpFormGroup.controls['expirationDate'].invalid" style="color: red">&nbsp;*&nbsp;</label>
             <label *ngIf="ccpFormGroup.controls['expirationDate'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
 
-            <span *ngIf="ccpFormGroup.controls['expirationDate'].dirty">
+            touched: {{ccpFormGroup.controls['expirationDate'].touched}}
+            dirty: {{ccpFormGroup.controls['expirationDate'].dirty}}
+            valid: {{ccpFormGroup.controls['expirationDate'].valid}}
+
+            <!-- <span *ngIf="ccpFormGroup.controls['expirationDate'].dirty || ccpFormGroup.controls['expirationDate'].touched">
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateIsNotValidOrDoesntExist')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Date has invalid format or doesn't exist in calendar.
+                </span>
+            </span> -->
             
-                <span>
+            <!-- <span *ngIf="ccpFormGroup.controls['expirationDate'].dirty">
             
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('yearNotContainOnlyDigits')" 
-                        class="alert alert-danger small  p-1" align="center">
-                        Year ('yyyy') can contain only digits.
-                    </span>
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('yearNotContainOnlyDigits')" 
+                    class="alert alert-danger small  p-1" align="center">
+                    Year ('yyyy') can contain only digits.
+                </span>
 
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('yearIsNotGreaterOrEqualWithCurrentYearAndLessThanPlus100Years')"
-                        class="alert alert-danger small  p-1" align="center">
-                        Year must be between {{currentYear}} and {{currentYear + 100}}.
-                    </span>
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('yearIsNotGreaterOrEqualWithCurrentYearAndLessThanPlus100Years')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Year must be between {{currentYear}} and {{currentYear + 100}}.
+                </span>
 
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('afterYearMustBeADash')"
-                        class="alert alert-danger small  p-1" align="center">
-                        After year must be a dash '-' character.
-                    </span>
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('afterYearMustBeADash')"
+                    class="alert alert-danger small  p-1" align="center">
+                    After year must be a dash '-' character.
+                </span>
 
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('monthNotContainOnlyDigits')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Month ('mm') can contain only digits.
+                </span>
 
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('monthIsNotBetween1And12')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Month must be between 01 and 12 with format 'mm'.
+                </span>
 
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('monthIsNotGreaterOrEqualWithCurrentMonthInCurrentYear')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Month must be greater or equal with curent month in current year.
+                </span>
+
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('afterMonthMustBeADash')"
+                    class="alert alert-danger small  p-1" align="center">
+                    After month must be a dash '-' character.
+                </span>
+
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dayNotContainOnlyDigits')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Day ('dd') can contain only digits.
+                </span>
+
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dayIsNotBetween1And28To31DependOnMonthAndLeapYear')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Day to be valid must between 1 to 28 up to 31 depend on month and leap year.
+                </span>
+
+            </span>
+
+            <span *ngIf="ccpFormGroup.controls['expirationDate'].dirty && 
+                         ccpFormGroup.controls['expirationDate'].touched">
             
-                    <!-- <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateHasNotAValidYearFormatInYYYdMMdDD')"
-                        class="alert alert-danger small  p-1" align="center">
-                        Year has not a valid format of 'yyyy'.
-                    </span>
-
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateHasNotAValidFormatInYYYdMMdDD')"
-                        class="alert alert-danger small  p-1" align="center">
-                        Date has not a valid format of 'yyyy-mm-dd'.
-                    </span>
-                                
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateIsNotValidInYYYdMMdDD')" 
-                        class="alert alert-danger small  p-1" align="center">
-                        Date has not a valid format (yyyy-mm-dd) or doesn't exist.
-                    </span>
-
-                    <span
-                        *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dateIsValidButInThePastYYYdMMdDD')" 
-                        class="alert alert-danger small  p-1" align="center">
-                        Date cannot be in the past.
-                    </span>
-
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('yearIsNotInPresentOrFuture100ValidInDateYYYdMMdDD')" 
-                        class="alert alert-danger small  p-1" align="center">
-                        Year must be bewteen {{currentYear}} and {{currentYear + 100}}.
-                    </span>
-
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('monthIsNotInPresentOrFutureInCurrentYearInDateYYYdMMdDD')"
-                        class="alert alert-danger small  p-1" align="center">
-                        Month must be greater or equal with curent year month.
-                    </span>
-
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dayIsNotInPresentOrFutureInCurrentMonthAndYearInDateYYYdMMdDD')"
-                        class="alert alert-danger small  p-1" align="center">
-                        Day must be greater or equal with the curent day.
-                    </span> -->
-
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dataInputCannotBeEmpty')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Data input cannot be empty.
                 </span>
             
-                <span *ngIf="ccpFormGroup.controls['expirationDate'].touched">
-            
-                    <span *ngIf="ccpFormGroup.controls['expirationDate'].errors?.minlength
-                                        || ccpFormGroup.controls['expirationDate'].errors?.maxlength"
-                        class="alert alert-danger small  p-1" align="center">
-                        Length must be of exactly {{fixedlength_expirationDate}} digits.
-                    </span>
-            
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].errors?.minlength
+                                                    || ccpFormGroup.controls['expirationDate'].errors?.maxlength"
+                    class="alert alert-danger small  p-1" align="center">
+                    Length must be of exactly {{fixedlength_expirationDate}} characters.
                 </span>
             
             </span>
@@ -200,11 +204,23 @@
             
             </span>
 
+            <span *ngIf="ccpFormGroup.controls['expirationDate'].touched  ">
+            
+                <span *ngIf="ccpFormGroup.controls['expirationDate'].hasError('dataInputNotHave10Characters')"
+                    class="alert alert-danger small  p-1" align="center">
+                    Date input not have 10 characters.
+                </span>
+            
+            </span> -->
+
+
             <div class="input-group">
 
-                <div class="input-group-append">
+                <div class="input-group-append" (click)="onCalendarClick()" onmousemove="onCalendarClick()" >
                     <button class="btn btn-sm btn-outline-secondary calendar" (click)="datePicker.toggle();"
-                        type="button">
+                        type="button"
+                        onmousemove="ccpFormGroup.controls['expirationDate'].updateValueAndValidity()"
+                        >
                         <i class="far fa-calendar-alt"></i>
                     </button>
                 </div>
@@ -218,10 +234,14 @@
                     minlength="{{fixedlength_expirationDate}}"
                     maxlength="{{fixedlength_expirationDate}}"
                     required        
-                    placeholder=""  
+                    placeholder="choose the date from calendar"  
                     ngbDatepicker #datePicker="ngbDatepicker"      
+                    (click)="onCalendarClick()" onmousemove="onCalendarClick()" 
+                    onchange="onChangeOnExpirationDateFormControl()"
                     autofocus />
             </div>
+            test: {{test}}
+            test2: {{test2}}
 
         </div>
 
@@ -304,9 +324,12 @@
             <label *ngIf="ccpFormGroup.controls['securityCodeCCV'].invalid" style="color: red">&nbsp;*&nbsp;</label>
             <label *ngIf="ccpFormGroup.controls['securityCodeCCV'].valid" style="color: darkgreen">&nbsp;&nbsp;<i class="fas fa-check"></i>&nbsp;</label>
 
+            
             <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].dirty" >
             
                 <span>
+
+                    
             
                     <span *ngIf="ccpFormGroup.controls['securityCodeCCV'].hasError('spacesArePresent')" class="alert alert-danger small  p-1" align="center">
                         Spaces are not accepted.

@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+
 import { Observable } from 'rxjs';
 import { Ccp } from '../../model/ccp.model';
 import { ccpActionTypes } from '../../state/ccp.actions';
-import { AppState } from 'src/store/reducers';
+
 import { getCcps } from '../../state/ccp.selectors';
 import { Update } from '@ngrx/entity';
+
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/store/reducers';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ccp-view-all',
@@ -16,10 +20,11 @@ export class CcpViewAllComponent implements OnInit {
   itemCapitalizeFullName: string = 'Credit Card Payment';
   itemCamelName: string = 'ccp';
   itemLowerCaseDashName: string = 'ccp';
+  itemsLowerCaseDashName: string = 'ccps';
 
   items!: Observable<Ccp[]>;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppState>, private router: Router) {}
 
   ngOnInit() {
     this.items = this.store.select(getCcps);
@@ -68,5 +73,11 @@ export class CcpViewAllComponent implements OnInit {
   toggleShowInternalIdColumnAndHideOptionsButtons() {
     this.showInternalIdColumnAndHideOptionsButtons = !this
       .showInternalIdColumnAndHideOptionsButtons;
+  }
+
+  onUpdate(index: number | string) {
+    this.router.navigate([
+      '../' + this.itemsLowerCaseDashName + '/view-one/' + index + '/edit',
+    ]);
   }
 }

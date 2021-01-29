@@ -17,9 +17,6 @@ import { ccpActionTypes } from '../../state/ccp.actions';
   styleUrls: ['./ccp-view-one.component.scss'],
 })
 export class CcpViewOneComponent implements OnInit {
-  //
-  // ###################################################
-  //
   // ccps!: Observable<Ccp[]>;
   ccps!: Ccp[];
   items!: any;
@@ -29,18 +26,18 @@ export class CcpViewOneComponent implements OnInit {
   ccpToBeUpdated!: Ccp | null;
 
   isUpdateActivated: boolean = false;
-  //
-  // ###################################################
-  //
 
-  // ###################################################
-  //
+  itemCapitalizeFullName: string = 'Credit Card Payment';
+  itemCamelName: string = 'ccp';
+  itemLowerCaseDashName: string = 'ccp';
+  itemNameDisplayed: string = 'Credit Card Payment';
+
   itemNameItem: string = 'ccp';
   itemDashItem: string = 'ccp';
 
   item!: Ccp;
   itemHeaders: string[] = [
-    'Id',
+    'Internal id',
     'Credit Card Number',
     'Card Holder',
     'Expiration Date',

@@ -7,6 +7,10 @@ import { SERVER_API_V1 } from 'src/app/app.constants';
 import { DataExchangeService } from 'src/app/shared/services/data-exchange.service';
 import { Ccp } from '../../model/ccp.model';
 
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/store/reducers';
+import { ccpActionTypes } from '../../state/ccp.actions';
+
 @Component({
   selector: 'app-ccp-view-one-dashboard',
   templateUrl: './ccp-view-one-dashboard.component.html',
@@ -69,6 +73,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
   // nextIdExistingInDataBase: number = -1;
 
   constructor(
+    private store: Store<AppState>,
     private itemService: ItemService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -119,27 +124,45 @@ export class CcpViewOneDashboardComponent implements OnInit {
     await this.getItem();
     await this.getItems();
 
-    var checkData = setInterval(() => {
-      this.currentId = +this.activatedRoute.snapshot.params.id;
+    ///////////////
+    this.currentId = +this.activatedRoute.snapshot.params.id;
 
-      this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.currentId;
+    this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.currentId;
 
-      this.firstItemOfItemsId = +this.items[0].id!;
+    this.firstItemOfItemsId = +this.items[0].id!;
 
-      this.lastItemOfItemsId = +this.items[this.itemsLength - 1].id!;
+    this.lastItemOfItemsId = +this.items[this.itemsLength - 1].id!;
 
-      this.currentIndexFromItems = this.items.findIndex(
-        (itemIterator) => +itemIterator.id! == this.currentId
-      );
+    this.currentIndexFromItems = this.items.findIndex(
+      (itemIterator) => +itemIterator.id! == this.currentId
+    );
 
-      this.getPrevId();
-      this.getNextId();
-      this.evaluateMarginsForDisablingNavigationButtons();
+    this.getPrevId();
+    this.getNextId();
+    this.evaluateMarginsForDisablingNavigationButtons();
+    
 
-      if (false) {
-        clearInterval(checkData);
-      }
-    }, 200);
+    // var checkData = setInterval(() => {
+    //   this.currentId = +this.activatedRoute.snapshot.params.id;
+
+    //   this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.currentId;
+
+    //   this.firstItemOfItemsId = +this.items[0].id!;
+
+    //   this.lastItemOfItemsId = +this.items[this.itemsLength - 1].id!;
+
+    //   this.currentIndexFromItems = this.items.findIndex(
+    //     (itemIterator) => +itemIterator.id! == this.currentId
+    //   );
+
+    //   this.getPrevId();
+    //   this.getNextId();
+    //   this.evaluateMarginsForDisablingNavigationButtons();
+
+    //   if (false) {
+    //     clearInterval(checkData);
+    //   }
+    // }, 200);
 
     setTimeout(() => {
       this.goToIdValue = this.currentId;
@@ -224,28 +247,34 @@ export class CcpViewOneDashboardComponent implements OnInit {
   isItemDeletedFromDataBase: boolean = false;
   itemDeletedIfStillExistInDataBase: Ccp = null!;
 
+  deleteCcp(ccpId: string | number) {
+    this.store.dispatch(ccpActionTypes.deleteCcp({ ccpId }));
+  }
+
   async onDelete() {
     this.isItemDeletedFromDataBase = false;
 
-    (await this.itemService.getItem(this.itemPath)).subscribe(
-      (data) => {
-        this.itemDeleted = data;
-        this.itemToDelete = data;
-        this.itemDeletedId = +this.itemDeleted.id!;
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        console.log(
-          'item ' +
-            this.itemClassName +
-            ' with id ' +
-            this.currentId +
-            ' to be deleted first was save in itemDeleted'
-        );
-      }
-    );
+    this.deleteCcp(this.currentId);
+
+    // (await this.itemService.getItem(this.itemPath)).subscribe(
+    //   (data) => {
+    //     this.itemDeleted = data;
+    //     this.itemToDelete = data;
+    //     this.itemDeletedId = +this.itemDeleted.id!;
+    //   },
+    //   (err) => {
+    //     console.log(err);
+    //   },
+    //   () => {
+    //     console.log(
+    //       'item ' +
+    //         this.itemClassName +
+    //         ' with id ' +
+    //         this.currentId +
+    //         ' to be deleted first was save in itemDeleted'
+    //     );
+    //   }
+    // );
   }
 
   async onDeleteOne() {
@@ -280,6 +309,8 @@ export class CcpViewOneDashboardComponent implements OnInit {
   messageFromCancel = false;
   viewComeBackFromCancelEditViewSubscription!: Subscription;
 
+  itemsDashName: string = 'ccps';
+
   onBack() {
     if (this.messageFromCancel) {
       this.viewStatus = 'view';
@@ -287,13 +318,13 @@ export class CcpViewOneDashboardComponent implements OnInit {
     }
 
     if (this.viewStatus == 'view') {
-      this.router.navigate(['../' + this.itemDashItem + '/view-all']);
+      this.router.navigate(['../' + this.itemsDashName + '/view-all']);
     }
 
     if (this.viewStatus == 'edit') {
       this.viewStatus = 'view';
       this.router.navigate([
-        '../' + this.itemDashItem + '/view-one/' + this.currentId + '/view',
+        '../' + this.itemsDashName + '/view-one/' + this.currentId + '/view',
       ]);
     }
   }

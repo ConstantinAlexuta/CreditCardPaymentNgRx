@@ -9,164 +9,175 @@
 
 </div>
 
+<div class="row">
 
-<div *ngIf="items | async; let itemsArray; " class="container my-3">
-
-    <div *ngIf="itemsArray.length == 0 && isAfterDelay" class="container my-5"
-        style="align-items: center; align-content: center; align-self: center;">
-        Items list is empty.
-        <br>
-        Add the first item by selecting the "Add one" option.
+    <div class="col-2">
     </div>
-
-    <div *ngIf="itemsArray.length != 0" class="my-2">
-        <button (click)="toggleShowInternalIdColumnAndHideOptionsButtons()" class="btn btn-outline-secondary mx-3 px-3 mt-5">
-            <span *ngIf="!showInternalIdColumnAndHideOptionsButtons">
-                Show
-            </span>
-            <span *ngIf="showInternalIdColumnAndHideOptionsButtons">
-                Hide
-            </span>
-            internal id
-        </button>
-    </div>
-
-    <table *ngIf="itemsArray.length != 0" class="table">
     
-        <thead>
-            <tr>
-                <th scope="col" *ngIf="showInternalIdColumnAndHideOptionsButtons">
-                    Internal Id
-                </th>
-                <th scope="col">
-                    Index
-                </th>
-                <th scope="col">
-                    Credit Card Number
-                </th>
-                <th scope="col">
-                    Card Holder
-                </th>
-                <th scope="col">
-                    Expiration Date
-                </th>
-                <th scope="col">
-                    Amount
-                </th>
-                <th scope="col">
-                    Security Code (CCV)
-                </th>
-                <th>
+    <div *ngIf="items | async; let itemsArray; " class=" col-8  justify-content-center mt-3 mb-3">
     
-                </th>
-            </tr>
-        </thead>
+        <div *ngIf="itemsArray.length == 0 && isAfterDelay" class="container my-5"
+            style="align-items: center; align-content: center; align-self: center;">
+            Items list is empty.
+            <br>
+            Add the first item by selecting the "Add one" option.
+        </div>
     
-        <tbody>
-            <tr *ngFor="let ccp of items | async; index as i;">
-    
-                <td *ngIf="showInternalIdColumnAndHideOptionsButtons">
-                    {{ccp.id}}
-                </td>
-    
-                <td>
-                    {{i}}
-                </td>
-    
-                <td>
-                    {{ccp.creditCardNumber}}
-                </td>
-    
-                <td style="color: blue;" [routerLink]="['../view-one', i]" routerLinkActive="active"
-                    [routerLinkActiveOptions]="{exact: true}">
-                    {{ccp.cardHolder}}
-                </td>
-    
-                <td style="text-align: center;">
-                    {{ccp.expirationDate}}
-                </td>
-    
-                <td style="text-align: start;">
-                    {{ccp.amount | currency }}
-                </td>
-    
-                <td style="text-align: center;">
-                    {{ccp.securityCodeCCV}}
-                </td>
-    
-                <td *ngIf="!showInternalIdColumnAndHideOptionsButtons">
-    
-                    <button (click)="showUpdateCcpForm(ccp)" class="btn btn-secondary mx-3">
-                        Update
-                    </button>
-    
-                    <button (click)="deleteCcp(ccp!.id!)" class="btn btn-secondary mx-3">
-                        Delete
-                    </button>
-    
-                </td>
-    
-            </tr>
-        </tbody>
-    
-    </table>
-    
-    
-    <div *ngIf="isUpdateActivated" style="margin-top: 50px; margin-left: 50px;">
-    
-        <h4 class="my-4">Update Credit Card Payment</h4>
-    
-        <form (ngSubmit)="updateCcp(updateCcpForm)" #updateCcpForm="ngForm">
-    
-            <div class="form-group">
-                <label for="creditCardNumber">Credit Card Number</label>
-                <input type="text" id="creditCardNumber" name="creditCardNumber" class="form-control" required
-                    [(ngModel)]="itemToBeUpdated!.creditCardNumber" style="width: 400px" />
-            </div>
-    
-            <div class="form-group">
-                <label for="cardHolder">Card Holder</label>
-                <input type="text" id="cardHolder" name="cardHolder" class="form-control" required
-                    [(ngModel)]="itemToBeUpdated!.cardHolder" style="width: 400px" />
-            </div>
-    
-            <div class="form-group">
-                <label for="expirationDate">Expiration Date</label>
-                <input type="text" id="expirationDate" name="expirationDate" class="form-control" required
-                    [(ngModel)]="itemToBeUpdated!.expirationDate" style="width: 400px" />
-            </div>
-    
-            <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="text" id="amount" name="amount" class="form-control" required
-                    [(ngModel)]="itemToBeUpdated!.amount" style="width: 400px" />
-            </div>
-    
-            <div class="form-group">
-                <label for="securityCodeCCV">Security Code (CCV)</label>
-                <input type="text" id="securityCodeCCV" name="securityCodeCCV" class="form-control" required
-                    [(ngModel)]="itemToBeUpdated!.securityCodeCCV" style="width: 400px" />
-            </div>
-    
-            <button [disabled]="updateCcpForm.invalid" class="btn btn-primary" type="submit">
-                Update
+        <div *ngIf="itemsArray.length != 0" class=" mb-4">
+            <button (click)="toggleShowInternalIdColumnAndHideOptionsButtons()"
+                class="btn btn-outline-secondary mx-3 px-3 mt-5">
+                <span *ngIf="!showInternalIdColumnAndHideOptionsButtons">
+                    Show
+                </span>
+                <span *ngIf="showInternalIdColumnAndHideOptionsButtons">
+                    Hide
+                </span>
+                internal id
             </button>
+        </div>
     
-        </form>
+        <table *ngIf="itemsArray.length != 0" class="table">
+    
+            <thead>
+                <tr>
+                    <th scope="col" *ngIf="showInternalIdColumnAndHideOptionsButtons">
+                        Internal Id
+                    </th>
+                    <th scope="col">
+                        Index
+                    </th>
+                    <th scope="col">
+                        Credit Card Number
+                    </th>
+                    <th scope="col">
+                        Card Holder
+                    </th>
+                    <th scope="col">
+                        Expiration Date
+                    </th>
+                    <th scope="col">
+                        Amount
+                    </th>
+                    <th scope="col">
+                        Security Code (CCV)
+                    </th>
+                    <th>
+    
+                    </th>
+                </tr>
+            </thead>
+    
+            <tbody>
+                <tr *ngFor="let ccp of items | async; index as i;">
+    
+                    <td *ngIf="showInternalIdColumnAndHideOptionsButtons">
+                        {{ccp.id}}
+                    </td>
+    
+                    <td>
+                        {{+i + 1}}
+                    </td>
+    
+                    <td>
+                        {{ccp.creditCardNumber}}
+                    </td>
+    
+                    <td style="color: blue;" [routerLink]="['../view-one', i]" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">
+                        {{ccp.cardHolder}}
+                    </td>
+    
+                    <td style="text-align: center;">
+                        {{ccp.expirationDate}}
+                    </td>
+    
+                    <td style="text-align: start;">
+                        {{ccp.amount | currency }}
+                    </td>
+    
+                    <td style="text-align: center;">
+                        {{ccp.securityCodeCCV}}
+                    </td>
+    
+                    <td *ngIf="!showInternalIdColumnAndHideOptionsButtons">
+    
+                        <button (click)="onUpdate(i)" class="btn btn-outline-secondary mx-3">
+                            Update
+                        </button>
+    
+                        <button (click)="deleteCcp(ccp!.id!)" class="btn btn-outline-secondary mx-3">
+                            Delete
+                        </button>
+    
+                    </td>
+    
+                </tr>
+            </tbody>
+    
+        </table>
+    
+    
+        <div *ngIf="isUpdateActivated" style="margin-top: 50px; margin-left: 50px;">
+    
+            <h4 class="my-4">Update Credit Card Payment</h4>
+    
+            <form (ngSubmit)="updateCcp(updateCcpForm)" #updateCcpForm="ngForm">
+    
+                <div class="form-group">
+                    <label for="creditCardNumber">Credit Card Number</label>
+                    <input type="text" id="creditCardNumber" name="creditCardNumber" class="form-control" required
+                        [(ngModel)]="itemToBeUpdated!.creditCardNumber" style="width: 400px" />
+                </div>
+    
+                <div class="form-group">
+                    <label for="cardHolder">Card Holder</label>
+                    <input type="text" id="cardHolder" name="cardHolder" class="form-control" required
+                        [(ngModel)]="itemToBeUpdated!.cardHolder" style="width: 400px" />
+                </div>
+    
+                <div class="form-group">
+                    <label for="expirationDate">Expiration Date</label>
+                    <input type="text" id="expirationDate" name="expirationDate" class="form-control" required
+                        [(ngModel)]="itemToBeUpdated!.expirationDate" style="width: 400px" />
+                </div>
+    
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="text" id="amount" name="amount" class="form-control" required
+                        [(ngModel)]="itemToBeUpdated!.amount" style="width: 400px" />
+                </div>
+    
+                <div class="form-group">
+                    <label for="securityCodeCCV">Security Code (CCV)</label>
+                    <input type="text" id="securityCodeCCV" name="securityCodeCCV" class="form-control" required
+                        [(ngModel)]="itemToBeUpdated!.securityCodeCCV" style="width: 400px" />
+                </div>
+    
+                <button [disabled]="updateCcpForm.invalid" class="btn btn-primary" type="submit">
+                    Update
+                </button>
+    
+            </form>
+        </div>
+    
+    
+        <div class="mt-2 mb-5">
+    
+            <div *ngIf="items && itemsArray.length == 1">
+                Is only one item in this list.
+            </div>
+    
+            <div *ngIf="items && itemsArray.length > 1">
+                Are a total of {{itemsArray.length}} items in this list.
+            </div>
+    
+        </div>
+    
+    
     </div>
 
-
-    <div class="my-5">
-
-        <div *ngIf="items && itemsArray.length == 1">
-            Is only one item in this list.
-        </div>
-        
-        <div *ngIf="items && itemsArray.length > 1">
-            Are a total of {{itemsArray.length}} items in this list.
-        </div>
-
+    <div class="col-2">
     </div>
-
 
 </div>
+

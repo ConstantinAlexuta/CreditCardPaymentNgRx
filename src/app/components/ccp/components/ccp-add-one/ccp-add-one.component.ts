@@ -26,6 +26,15 @@ import { onlyPositiveNonNullNumberValidator } from 'src/app/shared/form-control-
 import { inDateFormatYYYYdashMMdashDDYearMustContainOnlyDigits } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-year-must-contain-only-digits';
 import { inDateFormatYYYYdashMMdashDDYearMustBeGreaterOrEqualWithCurrentYearAndLessThanPlus100Years } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-year-must-be-greater-or-equal-with-current-year-and-less-than-plus-100-years';
 import { inDateFormatYYYYdashMMdashDDAfterYearMustBeADash } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-after-year-must-be-a-dash';
+import { inDateFormatYYYYdashMMdashDDdataInputCannotBeEmpty } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-data-input-cannot-be-empty';
+import { inDateFormatYYYYdashMMdashDDMonthMustContainOnlyDigits } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-month-must-contain-only-digits';
+import { inDateFormatYYYYdashMMdashDDMonthMustBeGreaterOrEqualWithCurrentMonthIfIsCurrentYear } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-month-must-be-greater-or-equal-with-current-month-if-is-current-year';
+import { inDateFormatYYYYdashMMdashDDMonthMustBeBetween1And12 } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-month-must-be-between-1-and-12';
+import { inDateFormatYYYYdashMMdashDDAfterMonthMustBeADash } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-after-month-must-be-a-dash';
+import { inDateFormatYYYYdashMMdashDDDayMustBeBetween1And28To31DependOnMonthAndLeapYear } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-day-must-be-between-1-and-28-to-31';
+import { inDateFormatYYYYdashMMdashDDDayMustContainOnlyDigits } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-day-must-contain-only-digits';
+import { inDateFormatYYYYdashMMdashDDDataInputMustHave10Characters } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-data-input-must-have-10-characters';
+import { inDateFormatYYYYdashMMdashDDDateMustBeValid } from 'src/app/shared/form-control-validators/date-validators/date-format-YYYY-dash-MM-dash-DD/in-date-format-YYYYdashMMdashDD-date-must-be-valid';
 
 @Component({
   selector: 'app-ccp-add-one',
@@ -80,9 +89,21 @@ export class CcpAddOneComponent implements OnInit {
         Validators.minLength(this.fixedlength_expirationDate),
         Validators.maxLength(this.fixedlength_expirationDate),
 
-        inDateFormatYYYYdashMMdashDDYearMustContainOnlyDigits,
-        inDateFormatYYYYdashMMdashDDYearMustBeGreaterOrEqualWithCurrentYearAndLessThanPlus100Years,
-        inDateFormatYYYYdashMMdashDDAfterYearMustBeADash,
+        // inDateFormatYYYYdashMMdashDDDateMustBeValid,
+
+        // inDateFormatYYYYdashMMdashDDDataInputMustHave10Characters,
+
+        // inDateFormatYYYYdashMMdashDDdataInputCannotBeEmpty,
+        // inDateFormatYYYYdashMMdashDDYearMustContainOnlyDigits,
+
+        // inDateFormatYYYYdashMMdashDDYearMustBeGreaterOrEqualWithCurrentYearAndLessThanPlus100Years,
+        // inDateFormatYYYYdashMMdashDDAfterYearMustBeADash,
+        // inDateFormatYYYYdashMMdashDDMonthMustContainOnlyDigits,
+        // inDateFormatYYYYdashMMdashDDMonthMustBeBetween1And12,
+        // inDateFormatYYYYdashMMdashDDMonthMustBeGreaterOrEqualWithCurrentMonthIfIsCurrentYear,
+        // inDateFormatYYYYdashMMdashDDAfterMonthMustBeADash,
+        // inDateFormatYYYYdashMMdashDDDayMustContainOnlyDigits,
+        // inDateFormatYYYYdashMMdashDDDayMustBeBetween1And28To31DependOnMonthAndLeapYear,
 
         // multipleCustomVerificationsForDateFormatYYYdMMdDDValidator,
 
@@ -122,7 +143,26 @@ export class CcpAddOneComponent implements OnInit {
   currentMonth = +this.currentDate.getMonth() + 1;
   currentDay = +this.currentDate.getDate();
 
-  ngOnInit(): void {}
+  test = 1;
+  test2 = 1;
+
+  ngOnInit(): void {
+    setInterval(() => {
+      this.ccpFormGroup.controls['expirationDate'].updateValueAndValidity();
+      this.test++;
+    }, 2000);
+  }
+
+  onCalendarClick() {
+    setInterval(() => {
+      this.ccpFormGroup.controls['expirationDate'].updateValueAndValidity();
+      this.test2++;
+    }, 2000);
+  }
+
+  onChangeOnExpirationDateFormControl() {
+    this.ccpFormGroup.controls['expirationDate'].updateValueAndValidity();
+  }
 
   onClearForm() {
     this.ccpFormGroup.patchValue({
@@ -323,7 +363,6 @@ export class CcpAddOneComponent implements OnInit {
   }
 
   readonlyAfterSave = '';
-
 
   reloadComponent() {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
