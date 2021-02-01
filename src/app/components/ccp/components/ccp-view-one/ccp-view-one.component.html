@@ -5,31 +5,21 @@
         Or the database server it's possible to be stopped.
         <br>
         Or internet connection is not available.
+        <br>
+        <br>
+        Go to "View all" page to reload the data that is need it 
+        <br>
+        (will work if internet connection is ok and if server is up).
     </p>
 </div>
-
-<!-- newIdRequest >>> {{newIdRequest}}
-<BR> currentId >> {{currentId}}
-<br> pathId >> {{pathId}} -->
-
-<!-- <br> currentId: {{currentId}} -->
-<!-- <br> items: {{items | json}} -->
-<!-- <br> ccps: {{ccps.toPromise() | json}} -->
-<!-- <br> ccp: {{ccp | json}} -->
-<!-- <br> ccp.id: {{ccp.id | json}} -->
-<!-- <br> ccps[3]: {{ccps[3] | json}} -->
-<!-- <br> ccps[3]: {{ccps[3].cardHolder | json}} -->
-
 
 
 <div *ngIf="item">
 
-    <!-- <h5 class="mt-0 mb-4">{{itemNameDisplayed}} details view</h5> -->
-
     <div class="form-group">
         <label>Index</label>
         <div class="form-control form-control-sm" style="background-color:whitesmoke;">
-        {{+currentId + 1}}</div>
+        {{+index + 0}}</div>
     </div>
 
     <div class="form-group">
