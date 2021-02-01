@@ -54,13 +54,5 @@
     "expirationDate": "07/27/2023",
     "amount": "5637.6",
     "securityCodeCCV": "576"
-  },
-  {
-    "id": "994b5e03-4e37-42bb-8453-ecdfaffd6854",
-    "creditCardNumber": "7547657475476574",
-    "cardHolder": "Metelean Costin",
-    "expirationDate": "05/16/2025",
-    "amount": "7834.45",
-    "securityCodeCCV": "565"
   }
 ]

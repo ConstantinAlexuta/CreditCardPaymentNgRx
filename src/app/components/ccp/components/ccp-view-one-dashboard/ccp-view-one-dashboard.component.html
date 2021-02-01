@@ -250,21 +250,20 @@
                         Last
                     </button>
         
-                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onGoToId()">
-                        Go to id
+                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onGoToIndex()">
+                        Go to
                     </button>
         
-                    <div class="col">
+                    <div class="col" style="text-align: center;">
         
-                        <div class="row mt-1 mb-1" style="font-size: 0.8em; text-align: center;">
-                            <div *ngIf="!showIsLessThanMinimumMessage && 
-                                                                                !showIsBiggerThanMaximumMessage && 
-                                                                                !showIidDoesntExistMessage">
-                                <small>
-                                    {{firstItemOfItemsId}} to {{lastItemOfItemsId}}
-                                    / Total: {{itemsLength}}
-                                    <br>
-                                </small>
+                        <div class="row mt-1 mb-1" style="font-size: 0.8em; text-align: center;" >
+                            <div *ngIf="!showIsLessThanMinimumMessage &&  !showIsBiggerThanMaximumMessage" style="text-align: center;">
+                                    <small *ngIf="itemsLength < 100">
+                                        &nbsp;&nbsp;&nbsp;
+                                    </small>
+                                    <small>
+                                        From {{1}} to {{itemsLength}}
+                                    </small>
                             </div>
         
                             <div *ngIf="showIsLessThanMinimumMessage" style="color: red">
@@ -280,20 +279,14 @@
                                 </small>
         
                             </div>
-                            <div *ngIf="showIidDoesntExistMessage" style="color: red">
-                                <small>
-                                    {{idDoesntExistMessage}}
-                                    <br>
-                                </small>
-                            </div>
                         </div>
         
                         <div class="row">
-                            <form onsubmit="onGoToId()">
+                            <form onsubmit="onGoToIndex()">
                                 <input class="btn btn-outline-secondary mx-0 px-0 my-2 my-sm-0 nav-link" type="number"
-                                    id="goToIdValue" name="goToIdValue" [(ngModel)]="goToIdValue" min="firstItemOfItemsId"
-                                    value="firstItemOfItemsId" max="lastItemOfItemsId" style="width: 100px; font-size: 1.0em;"
-                                    (click)="onGoToId()" onsubmit="onGoToId()">
+                                    id="goToIndexValue" name="goToIndexValue" [(ngModel)]="goToIndexValue" min="1"
+                                     max="itemsLength" style="width: 80px; font-size: 1.0em;"
+                                    (click)="onGoToIndex()" onsubmit="onGoToIndex()">
                             </form>
                         </div>
                         <br>

@@ -53,7 +53,7 @@ export class CcpEditOneComponent implements OnInit {
   viewComeBackFromCancelEditViewSubscription!: Subscription;
 
   async ngOnInit(): Promise<void> {
-    this.index = +this.activatedRoute.snapshot.parent?.params.id;
+    this.index = +this.activatedRoute.snapshot.parent?.params.id - 1;
 
     this.getItem();
 
@@ -67,7 +67,7 @@ export class CcpEditOneComponent implements OnInit {
   }
 
   async getItem() {
-    let currentIndex = await this.activatedRoute.snapshot.parent?.params.id;
+    let currentIndex = +this.activatedRoute.snapshot.parent?.params.id - 1;
 
     this.store.select(getCcps).subscribe(
       (data) => {
@@ -305,7 +305,11 @@ export class CcpEditOneComponent implements OnInit {
     this.dataExchangeService.changeMessageFromCancel(this.messageFromCancel);
 
     this.router.navigate([
-      '../' + this.itemsLowerCaseDashName + '/view-one/' + this.index + '/view',
+      '../' +
+        this.itemsLowerCaseDashName +
+        '/view-one/' +
+        (+this.index + 1) +
+        '/view',
     ]);
   }
 

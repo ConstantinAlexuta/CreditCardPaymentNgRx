@@ -28,7 +28,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
 
   index: number = -1;
   indexInitial: number = -1;
-  item!: Ccp;
+  // item!: Ccp;
   items!: Ccp[];
 
   isFirstLoad: boolean = true;
@@ -47,10 +47,10 @@ export class CcpViewOneDashboardComponent implements OnInit {
   nextId: number = -1;
 
   pathId!: string;
-  itemPath!: string;
+  // itemPath!: string;
   itemsPath: string = SERVER_API_V1 + this.itemDashItem;
+
   pageBrandViewOneItem!: string;
-  subscription!: Subscription;
 
   @Output() viewStatus: string = 'view'; // can be and "edit"
 
@@ -75,12 +75,9 @@ export class CcpViewOneDashboardComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.isFirstLoad = true;
+    this.initializeView();
 
-    this.viewStatus = 'view';
-
-    this.itemPath =
-      SERVER_API_V1 + this.itemDashItem + '/' + (await this.index); //  e.g.:  '/server/api/v1/ccp/id';
+ 
 
     this.viewComeBackFromCancelEditViewSubscription = this.dataExchangeService.currentMessageFromCancel.subscribe(
       (value) => {
@@ -91,20 +88,15 @@ export class CcpViewOneDashboardComponent implements OnInit {
       }
     );
 
-    this.subscription = this.activatedRoute.params.subscribe((params) => {
-      const id = params['id'];
-    });
 
     this.index = +this.activatedRoute.snapshot.params.id;
+    this.goToIndexValue = this.index;
 
-    // ATTEMP 1 = INSTANT //////////////////////////////////////////////////////////////////
-    await this.getItem();
     await this.getItems();
 
     ///////////////
     this.index = +this.activatedRoute.snapshot.params.id;
 
-    this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.index;
 
     this.firstItemOfItemsId = +this.items[0].id!;
 
@@ -114,21 +106,23 @@ export class CcpViewOneDashboardComponent implements OnInit {
       (itemIterator) => +itemIterator.id! == this.index
     );
 
-    setTimeout(() => {
-      this.goToIdValue = this.index;
-    }, 500);
+    setTimeout(() => {}, 500);
 
     setTimeout(() => {
       this.index = +this.activatedRoute.snapshot.params.id;
-      this.goToIdValue = this.index;
       this.getItem();
     }, 1000);
+  }
+
+  initializeView() {
+    this.isFirstLoad = true;
+
+    this.viewStatus = 'view';
   }
 
   updateItemAndOthers() {
     setTimeout(() => {
       this.index = +this.activatedRoute.snapshot.params.id;
-      this.goToIdValue = this.index;
       this.getItem();
     }, 500);
   }
@@ -157,18 +151,18 @@ export class CcpViewOneDashboardComponent implements OnInit {
     }, 3000);
   }
 
-  async getItem() {
-    (await this.itemService.getItem(this.itemPath)).subscribe(
-      (data) => {
-        this.item = data;
-      },
-      (err) => console.error(err),
-      () =>
-        console.log(
-          this.itemNameItem + ' with id ' + this.index + ' was loaded'
-        )
-    );
-  }
+  // async getItem() {
+  //   (await this.itemService.getItem(this.itemPath)).subscribe(
+  //     (data) => {
+  //       this.item = data;
+  //     },
+  //     (err) => console.error(err),
+  //     () =>
+  //       console.log(
+  //         this.itemNameItem + ' with id ' + this.index + ' was loaded'
+  //       )
+  //   );
+  // }
 
   async getItems(): Promise<any> {
     this.store.select(getCcps).subscribe(
@@ -213,29 +207,29 @@ export class CcpViewOneDashboardComponent implements OnInit {
   }
 
   async onDeleteOne() {
-    this.itemService.deleteItem(this.itemPath);
+    // this.itemService.deleteItem(this.itemPath);
 
-    setTimeout(async () => {
-      (await this.itemService.getItem(this.itemPath)).subscribe(
-        (data) => {
-          this.itemDeletedIfStillExistInDataBase = data;
-        },
-        (err) => {
-          this.isItemDeletedFromDataBase = true;
-          this.showIsItemDeletedFromDataBaseMessage = true;
-        },
-        () => {
-          this.showIsItemDeletedFromDataBaseMessage = true;
-          console.log(
-            'failure on deleting ' +
-              this.itemClassName +
-              ' with id ' +
-              this.index +
-              ' to be deleted first was save in itemDeleted'
-          );
-        }
-      );
-    }, 800);
+    // setTimeout(async () => {
+    //   (await this.itemService.getItem(this.itemPath)).subscribe(
+    //     (data) => {
+    //       this.itemDeletedIfStillExistInDataBase = data;
+    //     },
+    //     (err) => {
+    //       this.isItemDeletedFromDataBase = true;
+    //       this.showIsItemDeletedFromDataBaseMessage = true;
+    //     },
+    //     () => {
+    //       this.showIsItemDeletedFromDataBaseMessage = true;
+    //       console.log(
+    //         'failure on deleting ' +
+    //           this.itemClassName +
+    //           ' with id ' +
+    //           this.index +
+    //           ' to be deleted first was save in itemDeleted'
+    //       );
+    //     }
+    //   );
+    // }, 800);
   }
 
   // @Input()
@@ -302,6 +296,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
         clearInterval(getNavigationAvailableOptionsInterval);
         this.isFirstLoad = false;
         this.indexInitial = index;
+        this.goToIndexValue = index;
       }
     }, 100);
 
@@ -357,17 +352,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
     }
   }
 
-  setGoToIdValueTo(goToIdNewValue: number) {
-    this.goToIdValue = goToIdNewValue;
-  }
-
-  hideAllGoToIdMessages() {
-    this.showIsLessThanMinimumMessage = false;
-    this.showIsBiggerThanMaximumMessage = false;
-    this.showIidDoesntExistMessage = false;
-  }
-
-  goToIdValue!: number;
+  goToIndexValue!: number;
 
   showIsLessThanMinimumMessage: boolean = false;
   isLessThanMinimumMessage: string = 'less than min';
@@ -375,62 +360,38 @@ export class CcpViewOneDashboardComponent implements OnInit {
   showIsBiggerThanMaximumMessage: boolean = false;
   isBiggerThanMaximumMessage: string = 'bigger than max';
 
-  showIidDoesntExistMessage: boolean = false;
-  idDoesntExistMessage: string = "id doesn't exist";
+  onGoToIndex() {
+    this.showIsLessThanMinimumMessage = false;
+    this.showIsBiggerThanMaximumMessage = false;
 
-  onGoToId() {
-    this.hideAllGoToIdMessages();
-
-    if (this.goToIdValue < this.firstItemOfItemsId) {
+    if (this.goToIndexValue < 1) {
       this.showIsLessThanMinimumMessage = true;
       setTimeout(() => {
         this.showIsLessThanMinimumMessage = false;
       }, 4000);
     }
 
-    if (this.goToIdValue > this.lastItemOfItemsId) {
+    if (this.goToIndexValue > this.itemsLength) {
       this.showIsBiggerThanMaximumMessage = true;
       setTimeout(() => {
         this.showIsBiggerThanMaximumMessage = false;
       }, 4000);
     }
 
-    if (
-      this.goToIdValue == null ||
-      (this.goToIdValue >= this.firstItemOfItemsId &&
-        this.goToIdValue <= this.lastItemOfItemsId &&
-        !this.checkIfThisIdExist(this.goToIdValue))
-    ) {
-      this.showIidDoesntExistMessage = true;
-      setTimeout(() => {
-        this.showIidDoesntExistMessage = false;
-      }, 4000);
-    }
-
-    if (
-      this.goToIdValue >= this.firstItemOfItemsId &&
-      this.goToIdValue <= this.lastItemOfItemsId
-    ) {
+    if (this.goToIndexValue >= 1 && this.goToIndexValue <= this.itemsLength) {
       this.router.navigate([
-        '../' + this.itemDashItem + '/view-one/' + this.goToIdValue + '/view',
+        '../' + this.itemsDashItem + '/view-one',
+        +this.goToIndexValue,
       ]);
-    }
-  }
 
-  checkIfThisIdExist(checkId: number): boolean {
-    let answer: boolean = false;
-    this.items.forEach((item) => {
-      if (+item.id! == checkId) {
-        answer = true;
-      }
-    });
-    return answer;
+      this.index = +this.goToIndexValue;
+    }
+
+    this.getNavigationAvailableOptions();
   }
 
   //To prevent memory leak
   ngOnDestroy(): void {
-    if (this.subscription) this.subscription.unsubscribe();
-
     if (this.viewComeBackFromCancelEditViewSubscription)
       this.viewComeBackFromCancelEditViewSubscription.unsubscribe();
   }
