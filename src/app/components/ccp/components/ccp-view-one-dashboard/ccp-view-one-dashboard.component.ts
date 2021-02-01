@@ -77,8 +77,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.initializeView();
 
- 
-
     this.viewComeBackFromCancelEditViewSubscription = this.dataExchangeService.currentMessageFromCancel.subscribe(
       (value) => {
         this.messageFromCancel = value;
@@ -88,7 +86,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
       }
     );
 
-
     this.index = +this.activatedRoute.snapshot.params.id;
     this.goToIndexValue = this.index;
 
@@ -96,7 +93,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
 
     ///////////////
     this.index = +this.activatedRoute.snapshot.params.id;
-
 
     this.firstItemOfItemsId = +this.items[0].id!;
 
@@ -151,19 +147,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
     }, 3000);
   }
 
-  // async getItem() {
-  //   (await this.itemService.getItem(this.itemPath)).subscribe(
-  //     (data) => {
-  //       this.item = data;
-  //     },
-  //     (err) => console.error(err),
-  //     () =>
-  //       console.log(
-  //         this.itemNameItem + ' with id ' + this.index + ' was loaded'
-  //       )
-  //   );
-  // }
-
   async getItems(): Promise<any> {
     this.store.select(getCcps).subscribe(
       (data) => {
@@ -208,7 +191,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
 
   async onDeleteOne() {
     // this.itemService.deleteItem(this.itemPath);
-
     // setTimeout(async () => {
     //   (await this.itemService.getItem(this.itemPath)).subscribe(
     //     (data) => {
