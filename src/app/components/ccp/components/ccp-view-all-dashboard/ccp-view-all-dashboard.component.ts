@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-ccp-view-all-dashboard',
@@ -9,8 +8,9 @@ import { ActivatedRoute } from '@angular/router';
 export class CcpViewAllDashboardComponent implements OnInit {
   pageBrandItem: string = 'Credit Card Payment';
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor() {}
 
   itemDashboardName: string = 'Credit Card Number';
+
   ngOnInit(): void {}
 }

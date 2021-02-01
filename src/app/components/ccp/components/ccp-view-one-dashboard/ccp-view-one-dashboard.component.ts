@@ -2,7 +2,6 @@ import { Component, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { ItemService } from 'src/app/shared/services/item.service';
 import { SERVER_API_V1 } from 'src/app/app.constants';
 import { DataExchangeService } from 'src/app/shared/services/data-exchange.service';
 import { Ccp } from '../../model/ccp.model';
@@ -11,6 +10,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/store/reducers';
 import { ccpActionTypes } from '../../state/ccp.actions';
 import { getCcps } from '../../state/ccp.selectors';
+import { areCcpItemsComparedEquals } from '../../shared-locally/are-items-compared-equals';
 
 @Component({
   selector: 'app-ccp-view-one-dashboard',
@@ -18,17 +18,13 @@ import { getCcps } from '../../state/ccp.selectors';
   styleUrls: ['./ccp-view-one-dashboard.component.scss'],
 })
 export class CcpViewOneDashboardComponent implements OnInit {
-  //
-  // ###################################################
-  //
-  itemNameItem: string = 'ccp';
   itemDashItem: string = 'ccp';
   itemsDashItem: string = 'ccps';
   itemCapitalizeFullName: string = 'Credit Card Payment';
 
   index: number = -1;
   indexInitial: number = -1;
-  // item!: Ccp;
+  item!: Ccp;
   items!: Ccp[];
 
   isFirstLoad: boolean = true;
@@ -55,27 +51,30 @@ export class CcpViewOneDashboardComponent implements OnInit {
   @Output() viewStatus: string = 'view'; // can be and "edit"
 
   itemsLength: number = -1;
-  currentIndexFromItems: number = -1;
-
-  firstItemOfItemsId: number = -11;
-  lastItemOfItemsId: number = -1;
 
   constructor(
     private store: Store<AppState>,
-    private itemService: ItemService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private dataExchangeService: DataExchangeService
   ) {
-    this.index = +this.activatedRoute.snapshot.params.id;
-
-    this.indexInitial = this.index;
-
-    this.viewStatus = 'view';
+    // this.index = +this.activatedRoute.snapshot.params.id;
+    // this.viewStatus = 'view';
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
     this.initializeView();
+  }
+
+  initializeView() {
+    this.isFirstLoad = true;
+    this.index = +this.activatedRoute.snapshot.params.id;
+    this.indexInitial = this.index;
+    this.goToIndexValue = this.index;
+
+    this.getItems();
+
+    this.viewStatus = 'view';
 
     this.viewComeBackFromCancelEditViewSubscription = this.dataExchangeService.currentMessageFromCancel.subscribe(
       (value) => {
@@ -85,66 +84,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
         }
       }
     );
-
-    this.index = +this.activatedRoute.snapshot.params.id;
-    this.goToIndexValue = this.index;
-
-    await this.getItems();
-
-    ///////////////
-    this.index = +this.activatedRoute.snapshot.params.id;
-
-    this.firstItemOfItemsId = +this.items[0].id!;
-
-    this.lastItemOfItemsId = +this.items[this.itemsLength - 1].id!;
-
-    this.currentIndexFromItems = this.items.findIndex(
-      (itemIterator) => +itemIterator.id! == this.index
-    );
-
-    setTimeout(() => {}, 500);
-
-    setTimeout(() => {
-      this.index = +this.activatedRoute.snapshot.params.id;
-      this.getItem();
-    }, 1000);
-  }
-
-  initializeView() {
-    this.isFirstLoad = true;
-
-    this.viewStatus = 'view';
-  }
-
-  updateItemAndOthers() {
-    setTimeout(() => {
-      this.index = +this.activatedRoute.snapshot.params.id;
-      this.getItem();
-    }, 500);
-  }
-
-  updateItemsAndOthersIfItemAdded() {
-    let currentLastId = this.lastItemOfItemsId;
-
-    this.getItems();
-
-    setTimeout(() => {
-      if (currentLastId == this.lastItemOfItemsId) {
-        this.getItems();
-      }
-    }, 700);
-
-    setTimeout(() => {
-      if (currentLastId == this.lastItemOfItemsId) {
-        this.getItems();
-      }
-    }, 1500);
-
-    setTimeout(() => {
-      if (currentLastId == this.lastItemOfItemsId) {
-        this.getItems();
-      }
-    }, 3000);
   }
 
   async getItems(): Promise<any> {
@@ -169,49 +108,82 @@ export class CcpViewOneDashboardComponent implements OnInit {
   }
 
   itemClassName: string = 'Ccp';
-  itemId!: number;
   itemDeleted!: Ccp;
   itemDeletedId!: number;
 
   itemToDelete!: Ccp;
 
   showIsItemDeletedFromDataBaseMessage: boolean = false;
+
   isItemDeletedFromDataBase: boolean = false;
+
   itemDeletedIfStillExistInDataBase: Ccp = null!;
 
   deleteCcp(ccpId: string | number) {
     this.store.dispatch(ccpActionTypes.deleteCcp({ ccpId }));
   }
 
-  async onDelete() {
-    this.isItemDeletedFromDataBase = false;
+  onDelete() {
+    this.item = this.items[this.index - 1];
 
-    this.deleteCcp(this.index);
+    this.itemToDelete = { ...this.item };
+
+    this.isItemDeletedFromDataBase = false;
   }
 
+  itemsReloaded!: Ccp[];
+
   async onDeleteOne() {
-    // this.itemService.deleteItem(this.itemPath);
-    // setTimeout(async () => {
-    //   (await this.itemService.getItem(this.itemPath)).subscribe(
-    //     (data) => {
-    //       this.itemDeletedIfStillExistInDataBase = data;
-    //     },
-    //     (err) => {
-    //       this.isItemDeletedFromDataBase = true;
-    //       this.showIsItemDeletedFromDataBaseMessage = true;
-    //     },
-    //     () => {
-    //       this.showIsItemDeletedFromDataBaseMessage = true;
-    //       console.log(
-    //         'failure on deleting ' +
-    //           this.itemClassName +
-    //           ' with id ' +
-    //           this.index +
-    //           ' to be deleted first was save in itemDeleted'
-    //       );
-    //     }
-    //   );
-    // }, 800);
+    this.deleteCcp(this.item.id + '');
+
+    setTimeout(() => {
+      this.store.select(getCcps).subscribe(
+        (data) => {
+          this.itemsReloaded = data;
+          this.items = data;
+        },
+        (err) => console.error(err),
+        () =>
+          console.log(
+            this.itemCapitalizeFullName +
+              ' items array was reloaded after deleting one item'
+          )
+      );
+    }, 200);
+
+    setTimeout(() => {
+      this.verifyIfItemIsDeleted(this.itemsReloaded, this.itemToDelete);
+    }, 400);
+  }
+
+  verifyIfItemIsDeleted(items: Ccp[], item: Ccp) {
+    this.isItemDeletedFromDataBase = true;
+
+    this.showIsItemDeletedFromDataBaseMessage = true;
+
+    for (let index = 0; index < items.length; index++) {
+      if (areCcpItemsComparedEquals(this.itemToDelete, items[index])) {
+        this.isItemDeletedFromDataBase = false;
+
+        console.log(
+          'failure on deleting ' +
+            this.itemClassName +
+            ' with id ' +
+            this.index +
+            ' to be deleted first was save in itemDeleted'
+        );
+      }
+    }
+
+    if (this.isItemDeletedFromDataBase) {
+      this.itemDeleted = { ...this.itemToDelete };
+    }
+  }
+
+  onCloseDeleteItemConfirmation() {
+    this.dataExchangeService.changeMessageFromCancel(false);
+    this.viewStatus = 'view';
+    this.router.navigate(['../' + this.itemsDashItem + '/view-all']);
   }
 
   // @Input()
@@ -243,12 +215,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
   onEdit() {
     this.dataExchangeService.changeMessageFromCancel(false);
     this.viewStatus = 'edit';
-  }
-
-  onDeleteItemConfirmation() {
-    this.dataExchangeService.changeMessageFromCancel(false);
-    this.viewStatus = 'view';
-    this.router.navigate(['../' + this.itemDashItem + '/view-all']);
   }
 
   isNext: boolean = true;
@@ -388,34 +354,19 @@ export class CcpViewOneDashboardComponent implements OnInit {
   async onDuplicate() {
     this.showThisIsADuplicateMessage = false;
 
-    let itemToDuplicate = Object.assign({}, this.item); // simple clone
+    let itemToDuplicate = Object.assign({}, this.items[this.index - 1]); // simple clone
 
-    this.idOfLastItemDuplicated = +this.item.id!;
+    this.idOfLastItemDuplicated = +this.items[this.index - 1].id!;
 
     this.thisIsADuplicateMessage =
       'This is a new item with a new id, duplicated from item with id ' +
       this.idOfLastItemDuplicated;
 
-    // itemToDuplicate.id = undefined;
-
-    ///////////////////////////////// TO BE SOLVED
-    // await this.itemService.createItem(this.itemsPath, itemToDuplicate);
-
-    this.updateItemsAndOthersIfItemAdded();
-
     setTimeout(() => {
-      this.router.navigate([
-        '../' +
-          this.itemDashItem +
-          '/view-one/' +
-          this.lastItemOfItemsId +
-          '/view',
-      ]);
-
       this.showThisIsADuplicateMessage = true;
 
       setTimeout(() => {
-        this.getItem();
+        this.items[this.index - 1];
       }, 200);
     }, 1000);
 
