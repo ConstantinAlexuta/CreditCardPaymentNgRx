@@ -234,23 +234,19 @@
         
                     </div>
         
-                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onFirst()"
-                        [disabled]="isFirstId">
+                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onFirst()" [disabled]="!isPrev">
                         First
                     </button>
         
-                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onPrev()"
-                        [disabled]="!isPrevId">
+                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onPrev()" [disabled]="!isPrev">
                         Prev
                     </button>
         
-                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onNext()"
-                        [disabled]="!isNextId">
+                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onNext()" [disabled]="!isNext">
                         Next
                     </button>
         
-                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onLast()"
-                        [disabled]="isLastId">
+                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" (click)="onLast()" [disabled]="!isNext">
                         Last
                     </button>
         

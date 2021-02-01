@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import { Ccp } from '../../model/ccp.model';
 
 import { Store } from '@ngrx/store';
@@ -36,12 +36,20 @@ export class CcpViewOneComponent implements OnInit {
     this.getItem();
 
     this.showItemListEmptyMessageAfterDelay();
+
+    setInterval(() => {
+      let newIndex = this.activatedRoute.snapshot.parent?.params.id;
+      if (newIndex != this.index) {
+        this.index = newIndex;
+        this.getItem();
+      }
+    }, 50);
   }
 
   getItem() {
     this.store.select(getCcps).subscribe(
       (data) => {
-        this.item = data[this.index];
+        this.item = data[this.index - 1];
       },
       (err) => console.error(err),
       () => console.log(this.itemCapitalizeFullName + ' item was loaded')

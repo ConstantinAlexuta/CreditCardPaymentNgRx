@@ -82,7 +82,7 @@
                         {{ccp.creditCardNumber}}
                     </td>
     
-                    <td style="color: blue;" [routerLink]="['../view-one', i]" routerLinkActive="active"
+                    <td style="color: blue;" [routerLink]="['../view-one', +i+1]" routerLinkActive="active"
                         [routerLinkActiveOptions]="{exact: true}">
                         {{ccp.cardHolder}}
                     </td>

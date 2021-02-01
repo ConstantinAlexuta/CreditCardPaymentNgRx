@@ -10,6 +10,7 @@ import { Ccp } from '../../model/ccp.model';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/store/reducers';
 import { ccpActionTypes } from '../../state/ccp.actions';
+import { getCcps } from '../../state/ccp.selectors';
 
 @Component({
   selector: 'app-ccp-view-one-dashboard',
@@ -22,9 +23,16 @@ export class CcpViewOneDashboardComponent implements OnInit {
   //
   itemNameItem: string = 'ccp';
   itemDashItem: string = 'ccp';
+  itemsDashItem: string = 'ccps';
+  itemCapitalizeFullName: string = 'Credit Card Payment';
 
+  index: number = -1;
+  indexInitial: number = -1;
   item!: Ccp;
   items!: Ccp[];
+
+  isFirstLoad: boolean = true;
+
   itemHeaders: string[] = [
     'Id',
     'Credit Card Number',
@@ -33,19 +41,8 @@ export class CcpViewOneDashboardComponent implements OnInit {
     'Amount',
     'Security Code (CCV)',
   ];
-  itemFields: string[] = [
-    'id',
-    'creditCardNumber',
-    'cardHolder',
-    'expirationDate',
-    'amount',
-    'securityCodeCCV',
-  ];
-  //
-  // ###################################################
-  //
+
   previousId: number = -1;
-  currentId: number = -1;
   prevId: number = -1;
   nextId: number = -1;
 
@@ -54,9 +51,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
   itemsPath: string = SERVER_API_V1 + this.itemDashItem;
   pageBrandViewOneItem!: string;
   subscription!: Subscription;
-  // currentLongRouter!: string;
-  currentShortRouter!: string; // view-one
-  currentShortRouterId!: string; // 34
+
   @Output() viewStatus: string = 'view'; // can be and "edit"
 
   itemsLength: number = -1;
@@ -64,13 +59,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
 
   firstItemOfItemsId: number = -11;
   lastItemOfItemsId: number = -1;
-  //
-  // ###################################################
-  //
-
-  // ccp!: Ccp;
-  activeId!: number;
-  // nextIdExistingInDataBase: number = -1;
 
   constructor(
     private store: Store<AppState>,
@@ -79,29 +67,20 @@ export class CcpViewOneDashboardComponent implements OnInit {
     private router: Router,
     private dataExchangeService: DataExchangeService
   ) {
-    this.viewStatus = 'view';
-    this.currentShortRouter = activatedRoute.snapshot.url[0].path; // view-one
-    this.currentShortRouterId = activatedRoute.snapshot.url[1].path; // view-one
-  }
+    this.index = +this.activatedRoute.snapshot.params.id;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
-    //Add '${implements OnChanges}' to the class.
+    this.indexInitial = this.index;
+
+    this.viewStatus = 'view';
   }
 
   async ngOnInit(): Promise<void> {
-    //
-    // ###################################################
-    //
+    this.isFirstLoad = true;
+
     this.viewStatus = 'view';
-    // this.currentLongRouter = this.router.url;
-    this.currentId = +this.activatedRoute.snapshot.paramMap.get('id')
-      ?.toString!;
+
     this.itemPath =
-      SERVER_API_V1 + this.itemDashItem + '/' + (await this.currentId); //  e.g.:  '/server/api/v1/ccp/id';
-    //
-    // ###################################################
-    //
+      SERVER_API_V1 + this.itemDashItem + '/' + (await this.index); //  e.g.:  '/server/api/v1/ccp/id';
 
     this.viewComeBackFromCancelEditViewSubscription = this.dataExchangeService.currentMessageFromCancel.subscribe(
       (value) => {
@@ -116,69 +95,44 @@ export class CcpViewOneDashboardComponent implements OnInit {
       const id = params['id'];
     });
 
-    this.activeId = +this.activatedRoute.snapshot.paramMap.get('id')!;
-
-    this.currentId = +this.activatedRoute.snapshot.params.id;
+    this.index = +this.activatedRoute.snapshot.params.id;
 
     // ATTEMP 1 = INSTANT //////////////////////////////////////////////////////////////////
     await this.getItem();
     await this.getItems();
 
     ///////////////
-    this.currentId = +this.activatedRoute.snapshot.params.id;
+    this.index = +this.activatedRoute.snapshot.params.id;
 
-    this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.currentId;
+    this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.index;
 
     this.firstItemOfItemsId = +this.items[0].id!;
 
     this.lastItemOfItemsId = +this.items[this.itemsLength - 1].id!;
 
     this.currentIndexFromItems = this.items.findIndex(
-      (itemIterator) => +itemIterator.id! == this.currentId
+      (itemIterator) => +itemIterator.id! == this.index
     );
 
-    this.getPrevId();
-    this.getNextId();
     this.evaluateMarginsForDisablingNavigationButtons();
-    
 
-    // var checkData = setInterval(() => {
-    //   this.currentId = +this.activatedRoute.snapshot.params.id;
-
-    //   this.itemPath = SERVER_API_V1 + this.itemDashItem + '/' + this.currentId;
-
-    //   this.firstItemOfItemsId = +this.items[0].id!;
-
-    //   this.lastItemOfItemsId = +this.items[this.itemsLength - 1].id!;
-
-    //   this.currentIndexFromItems = this.items.findIndex(
-    //     (itemIterator) => +itemIterator.id! == this.currentId
-    //   );
-
-    //   this.getPrevId();
-    //   this.getNextId();
     //   this.evaluateMarginsForDisablingNavigationButtons();
 
-    //   if (false) {
-    //     clearInterval(checkData);
-    //   }
-    // }, 200);
-
     setTimeout(() => {
-      this.goToIdValue = this.currentId;
+      this.goToIdValue = this.index;
     }, 500);
 
     setTimeout(() => {
-      this.currentId = +this.activatedRoute.snapshot.params.id;
-      this.goToIdValue = this.currentId;
+      this.index = +this.activatedRoute.snapshot.params.id;
+      this.goToIdValue = this.index;
       this.getItem();
     }, 1000);
   }
 
   updateItemAndOthers() {
     setTimeout(() => {
-      this.currentId = +this.activatedRoute.snapshot.params.id;
-      this.goToIdValue = this.currentId;
+      this.index = +this.activatedRoute.snapshot.params.id;
+      this.goToIdValue = this.index;
       this.getItem();
     }, 500);
   }
@@ -186,9 +140,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
   updateItemsAndOthersIfItemAdded() {
     let currentLastId = this.lastItemOfItemsId;
 
-    setTimeout(() => {
-      this.getItems();
-    }, 200);
+    this.getItems();
 
     setTimeout(() => {
       if (currentLastId == this.lastItemOfItemsId) {
@@ -217,23 +169,30 @@ export class CcpViewOneDashboardComponent implements OnInit {
       (err) => console.error(err),
       () =>
         console.log(
-          this.itemNameItem + ' with id ' + this.currentId + ' was loaded'
+          this.itemNameItem + ' with id ' + this.index + ' was loaded'
         )
     );
   }
 
   async getItems(): Promise<any> {
-    (await this.itemService.getItems(this.itemsPath)).subscribe(
+    this.store.select(getCcps).subscribe(
       (data) => {
         this.items = data;
-        this.itemsLength = data.length;
-        console.log(data);
       },
       (err) => console.error(err),
-      () => {
-        console.log('destination categories loaded');
-      }
+      () => console.log(this.itemCapitalizeFullName + ' item was loaded')
     );
+
+    const getItemsLengthInterval = setInterval(() => {
+      if (!!this.items) {
+        this.itemsLength = this.items.length;
+
+        this.getNavigationAvailableOptions();
+      }
+      if (this.itemsLength != -1) {
+        clearInterval(getItemsLengthInterval);
+      }
+    }, 100);
   }
 
   itemClassName: string = 'Ccp';
@@ -254,27 +213,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
   async onDelete() {
     this.isItemDeletedFromDataBase = false;
 
-    this.deleteCcp(this.currentId);
-
-    // (await this.itemService.getItem(this.itemPath)).subscribe(
-    //   (data) => {
-    //     this.itemDeleted = data;
-    //     this.itemToDelete = data;
-    //     this.itemDeletedId = +this.itemDeleted.id!;
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //   },
-    //   () => {
-    //     console.log(
-    //       'item ' +
-    //         this.itemClassName +
-    //         ' with id ' +
-    //         this.currentId +
-    //         ' to be deleted first was save in itemDeleted'
-    //     );
-    //   }
-    // );
+    this.deleteCcp(this.index);
   }
 
   async onDeleteOne() {
@@ -295,7 +234,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
             'failure on deleting ' +
               this.itemClassName +
               ' with id ' +
-              this.currentId +
+              this.index +
               ' to be deleted first was save in itemDeleted'
           );
         }
@@ -324,7 +263,7 @@ export class CcpViewOneDashboardComponent implements OnInit {
     if (this.viewStatus == 'edit') {
       this.viewStatus = 'view';
       this.router.navigate([
-        '../' + this.itemsDashName + '/view-one/' + this.currentId + '/view',
+        '../' + this.itemsDashName + '/view-one/' + this.index + '/view',
       ]);
     }
   }
@@ -340,87 +279,85 @@ export class CcpViewOneDashboardComponent implements OnInit {
     this.router.navigate(['../' + this.itemDashItem + '/view-all']);
   }
 
-  setCommonNavigationSettingsAndGoToIdValue() {
-    this.setCommonNavigationSettings();
+  isNext: boolean = true;
+  isPrev: boolean = true;
 
-    this.goToIdValue = this.currentId;
-  }
+  getNavigationAvailableOptions() {
+    let ms = 0;
 
-  setCommonNavigationSettings() {
-    this.previousId = this.currentId;
+    const getNavigationAvailableOptionsInterval = setInterval(() => {
+      let index = +this.activatedRoute.snapshot.params.id;
+
+      if (index < this.itemsLength) {
+        this.isNext = true;
+      } else {
+        this.isNext = false;
+      }
+
+      if (index > 1) {
+        this.isPrev = true;
+      } else {
+        this.isPrev = false;
+      }
+
+      ms += 100;
+
+      if (this.isFirstLoad || this.indexInitial != index || ms >= 2000) {
+        clearInterval(getNavigationAvailableOptionsInterval);
+        this.isFirstLoad = false;
+        this.indexInitial = index;
+      }
+    }, 100);
+
     this.dataExchangeService.changeMessageFromCancel(false);
     this.viewStatus = 'view';
   }
 
   onPrev() {
-    this.setCommonNavigationSettingsAndGoToIdValue();
-    this.setGoToIdValueTo(this.prevId);
+    if (this.index > 1) {
+      this.router.navigate([
+        '../' + this.itemsDashItem + '/view-one',
+        +this.index - 1,
+      ]);
 
-    this.router.navigate([
-      '../' + this.itemDashItem + '/view-one/' + this.prevId + '/view',
-    ]);
+      this.index--;
+    }
 
-    this.updateItemAndOthers();
+    this.getNavigationAvailableOptions();
   }
 
-  async onNext() {
-    this.setCommonNavigationSettingsAndGoToIdValue();
-    this.setGoToIdValueTo(this.nextId);
+  onNext() {
+    if (this.index < this.itemsLength) {
+      this.router.navigate([
+        '../' + this.itemsDashItem + '/view-one',
+        +this.index + 1,
+      ]);
 
-    this.router.navigate([
-      '../' + this.itemDashItem + '/view-one/' + this.nextId + '/view',
-    ]);
+      this.index++;
+    }
 
-    this.updateItemAndOthers();
+    this.getNavigationAvailableOptions();
   }
 
   onFirst() {
-    this.setCommonNavigationSettingsAndGoToIdValue();
-    this.setGoToIdValueTo(this.firstItemOfItemsId);
+    if (this.index > 1) {
+      this.router.navigate(['../' + this.itemsDashItem + '/view-one', +1]);
 
-    this.router.navigate([
-      '../' +
-        this.itemDashItem +
-        '/view-one/' +
-        this.firstItemOfItemsId +
-        '/view',
-    ]);
+      this.index = 1;
 
-    this.updateItemAndOthers();
-  }
-
-  onLast() {
-    this.setCommonNavigationSettingsAndGoToIdValue();
-    this.setGoToIdValueTo(this.lastItemOfItemsId);
-
-    this.router.navigate([
-      '../' +
-        this.itemDashItem +
-        '/view-one/' +
-        this.lastItemOfItemsId +
-        '/view',
-    ]);
-
-    this.updateItemAndOthers();
-  }
-
-  isPrevId: boolean = false;
-  getPrevId() {
-    if (this.currentIndexFromItems > 0) {
-      this.isPrevId = true;
-      this.prevId = +this.items[this.currentIndexFromItems - 1].id!;
-    } else {
-      this.isPrevId = false;
+      this.getNavigationAvailableOptions();
     }
   }
 
-  isNextId: boolean = true;
-  getNextId() {
-    if (this.currentIndexFromItems < this.itemsLength - 1) {
-      this.isNextId = true;
-      this.nextId = +this.items[this.currentIndexFromItems + 1].id!;
-    } else {
-      this.isNextId = false;
+  onLast() {
+    if (this.index != this.itemsLength) {
+      this.router.navigate([
+        '../' + this.itemsDashItem + '/view-one',
+        +this.itemsLength,
+      ]);
+
+      this.index = this.itemsLength;
+      this.getNavigationAvailableOptions();
     }
   }
 
@@ -463,8 +400,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
 
   onGoToId() {
     this.hideAllGoToIdMessages();
-
-    this.setCommonNavigationSettings();
 
     if (this.goToIdValue < this.firstItemOfItemsId) {
       this.showIsLessThanMinimumMessage = true;
