@@ -114,10 +114,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
       (itemIterator) => +itemIterator.id! == this.index
     );
 
-    this.evaluateMarginsForDisablingNavigationButtons();
-
-    //   this.evaluateMarginsForDisablingNavigationButtons();
-
     setTimeout(() => {
       this.goToIdValue = this.index;
     }, 500);
@@ -358,22 +354,6 @@ export class CcpViewOneDashboardComponent implements OnInit {
 
       this.index = this.itemsLength;
       this.getNavigationAvailableOptions();
-    }
-  }
-
-  isFirstId: boolean = true;
-  isLastId: boolean = false;
-
-  evaluateMarginsForDisablingNavigationButtons() {
-    if (this.currentIndexFromItems == 0) {
-      this.isFirstId = true;
-    } else {
-      this.isFirstId = false;
-    }
-    if (this.currentIndexFromItems == this.itemsLength - 1) {
-      this.isLastId = true;
-    } else {
-      this.isLastId = false;
     }
   }
 
