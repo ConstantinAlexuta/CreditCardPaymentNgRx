@@ -192,23 +192,24 @@
                                 <div class="modal-footer"  *ngIf="showIsItemDeletedFromDataBaseMessage">
 
                                     <div class="row">
-                                        <div class="col col-9">
+                                        <div class="col col-8">
                                             <div class="">
 
                                                 <p *ngIf="!isItemDeletedFromDataBase">
-                                                    Error on deleting. Item with id {{itemDeletedId}} still exist in database!
+                                                    Error on deleting.
+                                                    <br>
+                                                    This item still exist in database!
                                                 </p>
                                                 
                                                 <p *ngIf="isItemDeletedFromDataBase">
-                                                    Confirmation success!
-                                                    <br>
+                                                    Confirmation success! 
                                                     This item doesn't exist in database any more!
                                                 </p>
                                                 
                                             </div>
                                         </div>
 
-                                        <div class="col  col-3" style="vertical-align: sub">
+                                        <div class="col  col-4" style="vertical-align: sub">
                                             <button type="button" class="btn btn-primary mx-3" data-dismiss="modal"
                                             (click)="onCloseDeleteItemConfirmation()">
                                             Close
