@@ -2,14 +2,9 @@
 <div class="row justify-content-center">
     <br>
     
-    <!-- bg-light -->
     <nav class="navbar navbar-expand-lg navbar-light">
 
         <div class="container-fluid">
-        
-            <!-- <a class="navbar-brand" href="#" [routerLink]="['view-all']">
-                                                            {{pageBrandItem}}
-                                                        </a> -->
         
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,38 +19,35 @@
                         Back
                     </button>
         
-        
-        
                     <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" [routerLink]="['../../add-one']"
-                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="onNew()">
+                        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         New
                     </button>
         
-                    <!-- TO DO -->
-                    <!-- <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" data-toggle="modal"
-                        data-target="#duplicateModal">
+                    <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" data-toggle="modal"
+                        data-target="#duplicateModal" (click)="onDuplicate()">
                         Duplicate
-                    </button> -->
+                    </button>
                     <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="duplicateModalLabel">
-                                        Do you want to make a copy of this item as a new entry item?
+                                        Duplicate this item?
                                         <br>
                                     </h5>
                                 </div>
         
-                                <div class="modal-header" *ngIf="item">
+                                <div class="modal-header" *ngIf="itemToDuplicate">
                                     <h6 style="font-size: 0.8em;">
                                         Duplicate:
                                         <br>
                                         <br>
-                                        Item id: &nbsp; {{item.id}}
+                                        Item id: &nbsp; {{itemToDuplicate.id}}
                                         <br>
                                         <br>
-                                        Item creditCardNumber: &nbsp; {{item.creditCardNumber | uppercase}}
+                                        Item creditCardNumber: &nbsp; {{itemToDuplicate.creditCardNumber | uppercase}}
                                     </h6>
                                 </div>
         
@@ -66,7 +58,7 @@
                                 <div class="modal-footer">
         
                                     <button type="button" class="btn btn-primary mx-3" data-dismiss="modal"
-                                        (click)="onDuplicate()" data-toggle="modal"
+                                        (click)="onDuplicateConfirmation()" data-toggle="modal"
                                         data-target="#duplicateConfirmationModal">
                                         Duplicate
                                     </button>
@@ -79,32 +71,6 @@
                             </div>
                         </div>
                     </div>
-        
-        
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        Launch demo modal
-                    </button>
-                    
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    ...
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
         
                     <button class="btn btn-outline-secondary mx-3 px-3 my-2 my-sm-0 nav-link" [routerLink]="['edit']"
                         routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="onEdit()">
@@ -173,7 +139,6 @@
                                     <h5 class="modal-title" id="deleteConfirmationModalLabel">
                                         Deleted confirmed
                                     </h5>
-                                    <!-- <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button> -->
                                 </div>
                                 <div class="modal-body" *ngIf="itemToDelete">
                                     <br>
@@ -302,10 +267,12 @@
         
     </nav>
 
+</div>
+
+<div class="row justify-content-center">
     <div *ngIf="showThisIsADuplicateMessage" class="mb-4" style="color: blue">
         {{thisIsADuplicateMessage}}
     </div>
-
 </div>
 
 <div class="container">
